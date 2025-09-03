@@ -14,4 +14,8 @@ public class Habilidade {
     public String getNome() {
         return nome;
     }
+     @Override
+    public String toString() {
+        return this.nome + " (" + this.descricao + ")";
+    }
 }
