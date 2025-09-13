@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.InputStream;
 import java.util.*;
 
@@ -121,9 +123,10 @@ public class GerenciadorPokemon implements Catalogo {
         String filePath = "Pokedex.txt";
 
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(filePath));){
-            String linha;
-            while((linha = reader.readLine()) != null){
+        try{
+            List<String> linhas = Files.readAllLines(Paths.get(filePath));
+
+            for(String linha: linhas){
                 System.out.println(linha);
             }
         }
@@ -134,5 +137,27 @@ public class GerenciadorPokemon implements Catalogo {
             System.out.println("alguma coisa nao esta certa");
         }
     }
+
+    public void buscarPokemon(){
+        String filePath = "Pokedex.txt";
+         
+        System.out.println("Qual id do pokemon você quer buscar? ");
+        String escolha = scanner.nextLine();
+
+        try{
+            List<String> linhas = Files.readAllLines(Paths.get(filePath));
+            for(String linha : linhas){
+
+                if(linha.contains("Id: " + escolha)){
+                    System.out.println(linha);
+                }
+            }
+        }
+        catch(IOException e){
+            System.out.println("alguma coisa nao esta certa");
+        }
+        
+    }
+
 
 }

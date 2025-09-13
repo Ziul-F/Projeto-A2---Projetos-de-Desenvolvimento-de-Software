@@ -1,1 +1,5 @@
-1,Bulbasaur,Planta,5,[Growl (Growl lowers the target's Attack by one stage.), Tackle (It deals damage with no additional effects.)]
+Id: 1; Nome: Bulbasaur; Tipo: Planta; Nível: 5; Habilidades: [Growl (Growl lowers the target's Attack by one stage.), Tackle (It deals damage with no additional effects.)]
+Id: 2; Nome: Ivysaur; Tipo: Planta/Veneno; Nível: 16; Habilidades: [Growl (Growl lowers the target's Attack by one stage.), Leech Seed (The user plants a seed on the target that drains some of its health each turn.), Vine Whip (The user attacks the target with a whip-like vine.)]
+Id: 3; Nome: Venusaur; Tipo: Planta/Veneno; Nível: 32; Habilidades: [Poison Powder (A cloud of poison dust is scattered over the foe.), Sleep Powder (A cloud of dust is scattered over the foe that puts it to sleep.), Solar Beam (A two-turn attack that requires a turn to charge before firing a powerful beam.)]
+Id: 4; Nome: Charmander; Tipo: Fogo; Nível: 5; Habilidades: [Growl (Growl lowers the target's Attack by one stage.), Scratch (It deals damage with no additional effects.)]
+Id: 5; Nome: Charmeleon; Tipo: Fogo; Nível: 16; Habilidades: [Ember (The user attacks with a small flame. It may also leave the target with a burn.), Growl (Growl lowers the target's Attack by one stage.), Scratch (It deals damage with no additional effects.)]

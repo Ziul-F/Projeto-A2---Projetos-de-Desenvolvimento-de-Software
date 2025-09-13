@@ -16,8 +16,7 @@ public class Main {
 
             System.out.println("2 - Deletar Pokemon;");
 
-            // System.out.println("3 - Buscar Pokemon;");
-            // gerenciadorPokemon.buscarPokemon(null);
+            System.out.println("3 - Buscar Pokemon;");
 
             System.out.println("4 - Listar  Pokemons;");
             
@@ -36,7 +35,7 @@ public class Main {
                     // gerenciadorPokemon.deletarPokemon();
                 break; 
                 case 3:
-                    // gerenciadorPokemon.buscarPokemon();4
+                    gerenciadorPokemon.buscarPokemon();
                     
                 break;
                 case 4:
