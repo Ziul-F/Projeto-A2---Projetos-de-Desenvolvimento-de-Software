@@ -41,7 +41,6 @@ public class Main {
                 case 4:
                     gerenciadorPokemon.listarPokemon();
                 break;
-                
             }
 
         }
