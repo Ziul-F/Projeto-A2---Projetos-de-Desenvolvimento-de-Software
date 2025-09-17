@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.util.*;
 
 public class GerenciadorPokemon implements Catalogo {
@@ -16,12 +17,6 @@ public class GerenciadorPokemon implements Catalogo {
     
     @Override
     public void adicionarPokemon(Pokemon pokemon) {
-        // if (pokemon != null) {
-        //     catalogo.put(pokemon.getNome(), pokemon);
-        //     salvarCatalogo();
-        //     System.out.println("Pokémon " + pokemon.getNome() + " adicionado e salvo.");
-        // }
-
 
         System.out.println("--- Adicionar novo Pokémon ---");
             
@@ -104,26 +99,12 @@ public class GerenciadorPokemon implements Catalogo {
         GerenciadorTxt txt = new GerenciadorTxt();
         System.out.println("--- Catálogo de Pokémon ---");
         System.out.println("");
-        // if (catalogo.isEmpty()) {
-        //     System.out.println("Nenhum Pokémon encontrado no catálogo.");
-        //     return;
-        // }
-
-        // for (Pokemon p : catalogo.values()) {
-        //     System.out.print("Id: " + p.getIdPokemon() + " , ");
-        //     System.out.print("Nome: " + p.getNome()+ " , ");
-        //     System.out.print("Tipo: " + p.getTipo()+ " , ");
-        //     System.out.print("Nível: " + p.getNivel()+ " , ");
-        //     System.out.println("Habilidades: " + p.getHabilidadeList()); 
-        //     System.out.println("\n---");
-        // }
         txt.ListarPokemon();
         System.out.println("");
         System.out.println("Final do catálogo.");
     }
 
-
-    public void salvarCatalogo() {
+    public void salvarCadastro() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoTxt))) {
             for (Pokemon p : catalogo.values()) {
                 writer.write("Id: " + p.getIdPokemon() + "; Nome: " + p.getNome() + "; tipo: " + p.getTipo() + "; Nível: " + p.getNivel()+ "; Habilidades: " + p.getHabilidadeList());
@@ -134,7 +115,138 @@ public class GerenciadorPokemon implements Catalogo {
         }
     }
 
+    @Override
+    public void mudarInformacao() {
+        System.out.println("--- Mudar Informação de um Pokémon ---");
+        System.out.print("Digite o nome do Pokémon que você quer editar: ");
+        String nomeParaEditar = scanner.nextLine();
+        String primeiraLetra = nomeParaEditar.substring(0, 1).toUpperCase();
+        String resto = nomeParaEditar.substring(1);
+        nomeParaEditar = primeiraLetra + resto;
+
+        try {
+            List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
+            boolean pokemonEncontrado = false;
+
+            // Cria uma nova lista para armazenar as linhas modificadas
+            List<String> novasLinhas = new ArrayList<>();
+
+            for (String linha : linhas) {
+                // Se a linha contém o nome do Pokémon, vamos editá-la
+                if (linha.contains("Nome: " + nomeParaEditar)) {
+                    pokemonEncontrado = true;
+                    String linhaAtualizada = processarModificacao(linha);
+                    novasLinhas.add(linhaAtualizada);
+                } else {
+                    // Se não for o Pokémon, adiciona a linha como está
+                    novasLinhas.add(linha);
+                }
+            }
+
+            if (pokemonEncontrado) {
+                // Reescreve o arquivo com as novas linhas
+                Files.write(Paths.get(arquivoTxt), novasLinhas);
+                System.out.println("Informações do Pokémon '" + nomeParaEditar + "' foram atualizadas com sucesso!");
+            } else {
+                System.out.println("Erro: O Pokémon com o nome '" + nomeParaEditar + "' não foi encontrado.");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Erro ao ler/escrever o arquivo: " + e.getMessage());
+        }
+    }
+
+    private String processarModificacao(String linha) {
+        // --- Passo 1: Analisar a linha e extrair os dados ---
+        Map<String, String> dados = new HashMap<>();
+        try {
+            // Usa substrings para encontrar cada campo de forma segura
+            String[] campos = {"Id", "Nome", "Tipo", "Nível", "Habilidades"};
+            int inicio = 0;
+            for (int i = 0; i < campos.length; i++) {
+                String chave = campos[i];
+                String chaveCompleta = chave + ":";
+                int fim;
+                
+                // Encontra o fim da chave-valor
+                if (i < campos.length - 1) {
+                    fim = linha.indexOf(campos[i + 1] + ":");
+                } else {
+                    fim = linha.length();
+                }
+
+                // Extrai o valor
+                String valorBruto = linha.substring(linha.indexOf(chaveCompleta, inicio) + chaveCompleta.length(), fim).trim();
+                
+                // Remove o ';' se for o caso
+                if (valorBruto.endsWith(";")) {
+                    valorBruto = valorBruto.substring(0, valorBruto.length() - 1);
+                }
+                
+                // Normaliza a chave e adiciona ao mapa
+                dados.put(normalizeString(chave), valorBruto.trim());
+
+                inicio = fim;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao analisar a linha do Pokémon: " + e.getMessage());
+            return linha; // Retorna a linha original para evitar corromper o arquivo
+        }
+        
+        // --- Passo 2: Exibir dados e pedir a alteração ---
+        System.out.println("\n--- Dados atuais do Pokémon ---");
+        dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
+        System.out.println("---------------------------------");
+        
+        System.out.print("\nQual campo você deseja mudar? (Id, Nome, Tipo, Nível, Habilidades): ");
+        String campoParaMudar = scanner.nextLine().trim();
+
+        // --- Passo 3: Obter o novo valor e validar ---
+        switch (campoParaMudar.toLowerCase()) {
+            case "id":
+            case "nivel":
+                System.out.print("Digite o novo valor para '" + campoParaMudar + "': ");
+                String novoValorNumerico = scanner.nextLine();
+                if (novoValorNumerico.matches("\\d+")) {
+                    dados.put(campoParaMudar, novoValorNumerico);
+                    System.out.println("Campo '" + campoParaMudar + "' atualizado para: " + novoValorNumerico);
+                } else {
+                    System.out.println("Aviso: Valor inválido. Apenas números são permitidos para este campo.");
+                }
+                break;
+            case "nome":
+            case "tipo":
+            case "habilidades":
+                System.out.print("Digite o novo valor para '" + campoParaMudar + "': ");
+                String novoValorTexto = scanner.nextLine();
+                dados.put(campoParaMudar, novoValorTexto);
+                System.out.println("Campo '" + campoParaMudar + "' atualizado para: " + novoValorTexto);
+                break;
+            default:
+                System.out.println("Erro: Campo '" + campoParaMudar + "' não encontrado. Nenhuma alteração foi feita.");
+                break;
+        }
+
+        // --- Passo 4: Reconstruir a linha com os dados atualizados ---
+        StringBuilder linhaReconstruida = new StringBuilder();
+        linhaReconstruida.append("Id: ").append(dados.get("id")).append("; ");
+        linhaReconstruida.append("Nome: ").append(dados.get("nome")).append("; ");
+        linhaReconstruida.append("Tipo: ").append(dados.get("tipo")).append("; ");
+        linhaReconstruida.append("Nível: ").append(dados.get("nivel")).append("; ");
+        linhaReconstruida.append("Habilidades: ").append(dados.get("habilidades"));
+
+        return linhaReconstruida.toString();
+    }
+
+    private String normalizeString(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase();
+    }
 
 
+
+    @Override
+    public void deletarIformacao(){};
 
 }

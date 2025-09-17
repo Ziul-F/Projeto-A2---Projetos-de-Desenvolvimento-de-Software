@@ -5,4 +5,8 @@ public abstract interface Catalogo {
 
     void listarPokemon();
 
+    void mudarInformacao();
+
+    void deletarIformacao();
+
 }

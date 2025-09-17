@@ -19,8 +19,10 @@ public class Main {
             System.out.println("3 - Buscar Pokemon;");
 
             System.out.println("4 - Listar  Pokemons;");
+
+            System.out.println("5 - Atualizar Informações");
             
-            System.out.println("5 - Sair.");
+            System.out.println("6 - Sair.");
 
             escolha = scanner.nextInt();
             scanner.nextLine();
@@ -37,7 +39,7 @@ public class Main {
                 case 3:
                     try {
                         gerenciadorPokemon.buscarPokemon();
-                    } catch (PokemonNaoEncontradoException e) {
+                    } catch (PokemonNaoEncontradoException e) { //uma geração automatica do VS por causa que o PokemonNaoEncontradoException não estava funcionando
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
@@ -46,10 +48,14 @@ public class Main {
                 case 4:
                     gerenciadorPokemon.listarPokemon();
                 break;
+
+                case 5:
+                    gerenciadorPokemon.mudarInformacao();
+                break;
             }
 
         }
-        while (escolha != 5);
+        while (escolha != 6);
         System.out.println("Programa Fechando");
         scanner.close();
     }

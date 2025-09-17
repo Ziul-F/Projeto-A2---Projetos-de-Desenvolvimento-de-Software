@@ -34,4 +34,6 @@ public class GerenciadorTxt {
             System.out.println(linha);
         }
     };
+
+    
 }
