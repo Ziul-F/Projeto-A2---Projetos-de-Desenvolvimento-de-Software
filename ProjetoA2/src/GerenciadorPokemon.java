@@ -1,24 +1,19 @@
-import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.io.InputStream;
 import java.util.*;
 
 public class GerenciadorPokemon implements Catalogo {
+
 
     Scanner scanner = new Scanner(System.in);
 
     private Map<String, Pokemon> catalogo = new HashMap<>();
     private static final String arquivoTxt = "Pokedex.txt";
-
+    
     @Override
     public void adicionarPokemon(Pokemon pokemon) {
         // if (pokemon != null) {
@@ -70,22 +65,43 @@ public class GerenciadorPokemon implements Catalogo {
                     
                     
                     System.out.println("\nPokémon adicionado! Catálogo atual:");
-
-                    // listarPokemon();
     }
 
     @Override
-    public Pokemon buscarPokemon(String nome) throws PokemonNaoEncontradoException {
-        Pokemon pokemon = catalogo.get(nome);
-        if(pokemon == null){
-            throw new PokemonNaoEncontradoException("O Pokémon com o nome '" + nome + "' não foi encontrado.");
-        }
+    public void buscarPokemon() throws PokemonNaoEncontradoException{
+        
+        System.out.println("Qual o nome do pokemon você quer buscar? ");
+        String escolha = scanner.nextLine(); 
+        String firstLetter = escolha.substring(0, 1).toUpperCase();
+        String restOfStr = escolha.substring(1);
+        escolha = firstLetter + restOfStr;
+        boolean verificadorBuscar = false;
 
-        return pokemon;
+        try{
+            List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
+
+            
+
+            for(String linha : linhas){
+                if(linha.contains(" Nome: " + escolha)){
+                    System.out.println(linha);
+                    verificadorBuscar = true;
+                    break;
+                }
+            }
+
+        }
+        catch(IOException e){
+            System.out.println("Ocorreu um erro ao ler o arquivo.");
+        }
+        if(verificadorBuscar == false){
+            throw new PokemonNaoEncontradoException("O Pokémon com o nome " + escolha + " nao foi encontrado.");
+        }
     }
 
     @Override
     public void listarPokemon() {
+        GerenciadorTxt txt = new GerenciadorTxt();
         System.out.println("--- Catálogo de Pokémon ---");
         System.out.println("");
         // if (catalogo.isEmpty()) {
@@ -101,9 +117,7 @@ public class GerenciadorPokemon implements Catalogo {
         //     System.out.println("Habilidades: " + p.getHabilidadeList()); 
         //     System.out.println("\n---");
         // }
-
-
-        lerArquivo();
+        txt.ListarPokemon();
         System.out.println("");
         System.out.println("Final do catálogo.");
     }
@@ -121,44 +135,6 @@ public class GerenciadorPokemon implements Catalogo {
     }
 
 
-    public void lerArquivo(){
-        String filePath = "Pokedex.txt";
 
-
-        try{
-            List<String> linhas = Files.readAllLines(Paths.get(filePath));
-
-            for(String linha: linhas){
-                System.out.println(linha);
-            }
-        }
-        catch(FileNotFoundException e){
-            System.out.println("arquivo nao encontrado");
-        }
-        catch(IOException e){
-            System.out.println("alguma coisa nao esta certa");
-        }
-    }
-
-    public void buscarPokemon(){
-        String filePath = "Pokedex.txt";
-         
-        System.out.println("Qual id do pokemon você quer buscar? ");
-        String escolha = scanner.nextLine(); 
-
-        try{
-            List<String> linhas = Files.readAllLines(Paths.get(filePath));
-            for(String linha : linhas){
-
-                if(linha.contains("Id: " + escolha)){
-                    System.out.println(linha);
-                }
-            }
-        }
-        catch(IOException e){
-            System.out.println("alguma coisa nao esta certa");
-        }
-        
-    }
 
 }

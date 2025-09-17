@@ -35,7 +35,12 @@ public class Main {
                     // gerenciadorPokemon.deletarPokemon();
                 break; 
                 case 3:
-                    gerenciadorPokemon.buscarPokemon();
+                    try {
+                        gerenciadorPokemon.buscarPokemon();
+                    } catch (PokemonNaoEncontradoException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     
                 break;
                 case 4:

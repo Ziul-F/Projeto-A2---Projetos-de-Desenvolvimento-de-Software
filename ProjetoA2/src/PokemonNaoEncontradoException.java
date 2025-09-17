@@ -1,6 +1,5 @@
 public class PokemonNaoEncontradoException extends Exception {
-
-    public PokemonNaoEncontradoException(String mensagem) {
-        super(mensagem);
+    public PokemonNaoEncontradoException(String message) {
+        super(message);
     }
 }
