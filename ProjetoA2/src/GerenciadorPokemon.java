@@ -14,6 +14,56 @@ public class GerenciadorPokemon implements Catalogo {
 
     private Map<String, Pokemon> catalogo = new HashMap<>();
     private static final String arquivoTxt = "Pokedex.txt";
+
+
+    public void menuGerenciadorPokemon(){
+        int escolha = 0;
+        do {
+
+            System.out.println("--------------------------------------");
+            System.out.println("-- BEM VINDO A POKÉDEX --");
+            System.out.println("--------------------------------------");
+            System.out.println("Escolha um número:");   
+            System.out.println("1 - Adicionar Pokemon;");
+            System.out.println("2 - Deletar Pokemon;");
+            System.out.println("3 - Buscar Pokemon;");
+            System.out.println("4 - Listar  Pokemons;");
+            System.out.println("5 - Atualizar Informações");
+            System.out.println("6 - Sair.");
+            System.out.println("--------------------------------------");
+            System.out.print("Sua escolha:");
+            escolha = scanner.nextInt();
+            scanner.nextLine();
+
+        
+            switch (escolha) {
+                case 1 :
+                    adicionarPokemon(null);
+                break;
+                case 2:
+                    deletarIformacao();
+                break; 
+                case 3:
+                    try {
+                        buscarPokemon();
+                    } catch (PokemonNaoEncontradoException e) { //uma geração automatica do VS por causa que o PokemonNaoEncontradoException não estava funcionando
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    
+                break;
+                case 4:
+                    listarPokemon();
+                break;
+
+                case 5:
+                    mudarInformacao();
+                break;
+            }
+
+        }
+        while (escolha != 6);
+    }
     
     @Override
     public void adicionarPokemon(Pokemon pokemon) {

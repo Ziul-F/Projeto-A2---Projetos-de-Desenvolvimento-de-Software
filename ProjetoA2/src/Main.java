@@ -2,60 +2,33 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("-- BEM VINDO A POKÉDEX --");
-
         Scanner scanner = new Scanner(System.in);
         GerenciadorPokemon gerenciadorPokemon = new GerenciadorPokemon();
 
-        int escolha = 0;
-        do {
-
-            System.out.println("Escolha um número:");
-            
-            System.out.println("1 - Adicionar Pokemon;");
-
-            System.out.println("2 - Deletar Pokemon;");
-
-            System.out.println("3 - Buscar Pokemon;");
-
-            System.out.println("4 - Listar  Pokemons;");
-
-            System.out.println("5 - Atualizar Informações");
-            
-            System.out.println("6 - Sair.");
-
-            escolha = scanner.nextInt();
+        int escolhaMenuPrincipal = 0;
+        do
+        {
+            System.out.println("-- BEM VINDO AO GERENCIADOR DE POKEMONS --");
+            System.out.println("--------------------------------------");
+            System.out.println("Para entrar escolha um número.");
+            System.out.println("1 - Gerenciar Pokédex;");
+            System.out.println("2 - Gerenciar Treinadores.");
+            System.out.println("3 - Sair");
+            System.out.println("--------------------------------------");
+            System.out.print("Sua escolha:");
+            escolhaMenuPrincipal = scanner.nextInt();
             scanner.nextLine();
-            System.out.println("Sua escolha:" + escolha);
 
-        
-            switch (escolha) {
-                case 1 :
-                    gerenciadorPokemon.adicionarPokemon(null);
+            switch(escolhaMenuPrincipal){
+                case 1:
+                    gerenciadorPokemon.menuGerenciadorPokemon();
                 break;
                 case 2:
-                    // gerenciadorPokemon.deletarPokemon();
-                break; 
-                case 3:
-                    try {
-                        gerenciadorPokemon.buscarPokemon();
-                    } catch (PokemonNaoEncontradoException e) { //uma geração automatica do VS por causa que o PokemonNaoEncontradoException não estava funcionando
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                    
-                break;
-                case 4:
-                    gerenciadorPokemon.listarPokemon();
-                break;
-
-                case 5:
-                    gerenciadorPokemon.mudarInformacao();
+                    // gerenciadorTreinador.menuGerenciadorTreinador;
                 break;
             }
-
         }
-        while (escolha != 6);
+        while(escolhaMenuPrincipal != 3);
         System.out.println("Programa Fechando");
         scanner.close();
     }
