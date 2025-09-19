@@ -14,24 +14,14 @@ public class GerenciadorPokemon implements Catalogo {
 
     private Map<String, Pokemon> catalogo = new HashMap<>();
     private static final String arquivoTxt = "Pokedex.txt";
+    Menus menu = new Menus();
 
 
-    public void menuGerenciadorPokemon(){
+    public void gerenciadorPokemon(){
         int escolha = 0;
         do {
 
-            System.out.println("--------------------------------------");
-            System.out.println("-- BEM VINDO A POKÉDEX --");
-            System.out.println("--------------------------------------");
-            System.out.println("Escolha um número:");   
-            System.out.println("1 - Adicionar Pokemon;");
-            System.out.println("2 - Deletar Pokemon;");
-            System.out.println("3 - Buscar Pokemon;");
-            System.out.println("4 - Listar  Pokemons;");
-            System.out.println("5 - Atualizar Informações");
-            System.out.println("6 - Sair.");
-            System.out.println("--------------------------------------");
-            System.out.print("Sua escolha:");
+            menu.menuPokemon();
             escolha = scanner.nextInt();
             scanner.nextLine();
 
