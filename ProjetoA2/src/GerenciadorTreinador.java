@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class GerenciadorTreinador implements CatalogoTreinador{
+
     Menus menu = new Menus();
     Scanner scanner = new Scanner(System.in);
     
@@ -35,7 +36,16 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     };
 
     @Override
-    public void adicionarTreinador(){};
+    public void adicionarTreinador(){
+        System.out.println("--- Adicionar novo Treinador ---");
+
+        System.out.print("Digite o ID do Pokémon: ");
+        int treinadorId = scanner.nextInt();
+        scanner.nextLine();
+            
+        System.out.print("Digite o nome do Treinador: ");
+        String nome = scanner.nextLine();
+            };
     @Override
     public void deletarIformacaoTreinador(){};
     @Override

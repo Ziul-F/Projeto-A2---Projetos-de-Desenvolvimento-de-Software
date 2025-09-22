@@ -59,16 +59,17 @@ public class GerenciadorPokemon implements Catalogo {
     public void adicionarPokemon(Pokemon pokemon) {
 
         System.out.println("--- Adicionar novo Pokémon ---");
+
+                    System.out.print("Digite o ID do Pokémon: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine();
             
                     System.out.print("Digite o nome do Pokémon: ");
                     String nome = scanner.nextLine();
             
-                    System.out.print("Digite o tipo do Pokémon: ");
-                    String tipo = scanner.nextLine();
-            
-                    System.out.print("Digite o ID do Pokémon: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
+                    
+                    escolhaTipos();
+
             
                     System.out.print("Digite o nível do Pokémon: ");
                     int nivel = scanner.nextInt();
@@ -288,5 +289,87 @@ public class GerenciadorPokemon implements Catalogo {
 
     @Override
     public void deletarIformacao(){};
+
+    public void escolhaTipos(){
+        String tipo;
+        boolean verificador = false;
+        verificador = true;
+
+        do{
+            menu.tiposPokemon();
+            int escolhatipos = scanner.nextInt();
+            scanner.nextLine();
+            if ((escolhatipos > 0) && (escolhatipos < 15)) {
+                switch(escolhatipos){
+                case 1:
+                    tipo = "Normal";
+                    verificador = true;
+                break;
+                case 2:
+                    tipo = "Fogo";
+                    verificador = true;
+                break;
+                case 3:
+                    tipo = "Água";
+                    verificador = true;
+                break;
+                case 4:
+                    tipo = "Planta";
+                    verificador = true;
+                break;
+                case 5:
+                    tipo = "Elétrico";
+                    verificador = true;
+                break;
+                case 6:
+                    tipo = "Gelo";
+                    verificador = true;
+                break;
+                case 7:
+                    tipo = "Lutador";
+                    verificador = true;
+                break;
+                case 8:
+                    tipo = "Veneno";
+                    verificador = true;
+                break;
+                case 9:
+                    tipo = "Terra";
+                    verificador = true;
+                break;
+                case 10:
+                    tipo = "Vaoador";
+                    verificador = true;
+                break;
+                case 11:
+                    tipo = "Psíquico";
+                    verificador = true;
+                break;
+                case 12:
+                    tipo = "Inseto";
+                    verificador = true;
+                break;
+                case 13:
+                    tipo = "Pedra";
+                    verificador = true;
+                break;
+                case 14:
+                    tipo = "Fantasma";
+                    verificador = true;
+                break;
+                case 15:
+                    tipo = "Dragão";
+                    verificador = true;
+                break;
+                }
+            }
+            else{
+                System.out.println("Escolha um número de 1 a 15.");
+            }
+            
+        }
+        while(verificador != true);
+        
+    }
 
 }

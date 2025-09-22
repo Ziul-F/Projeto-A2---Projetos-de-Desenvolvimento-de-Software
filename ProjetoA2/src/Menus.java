@@ -40,4 +40,23 @@ public class Menus {
             System.out.println("------------------------------------------");
             System.out.print("Sua escolha:");
     };
+
+    public void tiposPokemon(){
+        System.out.println("Ecolha o tipo de seu pokemon: ");
+        System.out.println("1 - Normal");
+        System.out.println("2 - Fogo");
+        System.out.println("3 - Água");
+        System.out.println("4 - Planta");
+        System.out.println("5 - Elétrico");
+        System.out.println("6 - Gelo");
+        System.out.println("7 - Lutador");
+        System.out.println("8 - Veneno");
+        System.out.println("9 - Terra");
+        System.out.println("10 - Voador");
+        System.out.println("11 - Psíquico");
+        System.out.println("12 - Inseto");
+        System.out.println("13 - Pedra");
+        System.out.println("14 - Fantasma");
+        System.out.println("15 - Dragão");
+    }
 }
