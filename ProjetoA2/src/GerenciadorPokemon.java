@@ -12,6 +12,8 @@ public class GerenciadorPokemon implements Catalogo {
 
 
     Scanner scanner = new Scanner(System.in);
+    GerenciadorTxt gerenciarOutPut = new GerenciadorTxt();
+    
 
     private Map<String, Pokemon> catalogo = new HashMap<>();
     private static final String arquivoTxt = "Pokedex.txt";
@@ -111,10 +113,20 @@ public class GerenciadorPokemon implements Catalogo {
         
         System.out.println("Qual o nome do pokemon você quer buscar? ");
         String escolha = scanner.nextLine(); 
-        String firstLetter = escolha.substring(0, 1).toUpperCase();
-        String restOfStr = escolha.substring(1);
-        escolha = firstLetter + restOfStr;
         boolean verificadorBuscar = false;
+        boolean temMaiuscula = false;
+
+        for (char c : escolha.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                temMaiuscula = true;
+            }
+        }
+        if (temMaiuscula == false) {
+            String firstLetter = escolha.substring(0, 1).toUpperCase();
+            String restOfStr = escolha.substring(1);
+            escolha = firstLetter + restOfStr;
+        }
+
 
         try{
             List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
@@ -122,7 +134,7 @@ public class GerenciadorPokemon implements Catalogo {
             
 
             for(String linha : linhas){
-                if(linha.contains(" Nome: " + escolha)){
+                if(linha.contains("Nome: " + escolha)){
                     System.out.println(linha);
                     verificadorBuscar = true;
                     break;
@@ -291,7 +303,16 @@ public class GerenciadorPokemon implements Catalogo {
 
 
     @Override
-    public void deletarIformacao(){};
+    public void deletarIformacao(){
+        try {
+            GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
+            gerenciadorTxt.deletarLinha();
+            System.out.println("Pokemon removido com sucesso!");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    };
 
     public void escolhaTipos(){
 
