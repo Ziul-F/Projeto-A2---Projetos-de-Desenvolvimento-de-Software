@@ -8,6 +8,7 @@ import java.text.Normalizer;
 import java.util.*;
 
 public class GerenciadorPokemon implements Catalogo {
+    private String tipo;
 
 
     Scanner scanner = new Scanner(System.in);
@@ -58,6 +59,8 @@ public class GerenciadorPokemon implements Catalogo {
     @Override
     public void adicionarPokemon(Pokemon pokemon) {
 
+        
+
         System.out.println("--- Adicionar novo Pokémon ---");
 
                     System.out.print("Digite o ID do Pokémon: ");
@@ -67,9 +70,9 @@ public class GerenciadorPokemon implements Catalogo {
                     System.out.print("Digite o nome do Pokémon: ");
                     String nome = scanner.nextLine();
             
-                    
-                    escolhaTipos();
 
+                    escolhaTipos();
+                    
             
                     System.out.print("Digite o nível do Pokémon: ");
                     int nivel = scanner.nextInt();
@@ -291,7 +294,7 @@ public class GerenciadorPokemon implements Catalogo {
     public void deletarIformacao(){};
 
     public void escolhaTipos(){
-        String tipo;
+
         boolean verificador = false;
         verificador = true;
 
