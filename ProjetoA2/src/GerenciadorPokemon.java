@@ -70,7 +70,21 @@ public class GerenciadorPokemon implements Catalogo {
                     scanner.nextLine();
             
                     System.out.print("Digite o nome do Pokémon: ");
+                    boolean temMaiuscula = false;
                     String nome = scanner.nextLine();
+
+                    for (char c : nome.toCharArray()) {
+                        if (Character.isUpperCase(c)) {
+                            temMaiuscula = true;
+                        }
+                    }
+
+                    if (temMaiuscula == false) {
+                        String firstLetter = nome.substring(0, 1).toUpperCase();
+                        String restOfStr = nome.substring(1);
+                        nome = firstLetter + restOfStr;
+                    }
+                    
             
 
                     escolhaTipos();
@@ -306,7 +320,7 @@ public class GerenciadorPokemon implements Catalogo {
     public void deletarIformacao(){
         try {
             GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
-            gerenciadorTxt.deletarLinha();
+            gerenciadorTxt.deletarLinhaPokemon();
             System.out.println("Pokemon removido com sucesso!");
         }
         catch(Exception e){

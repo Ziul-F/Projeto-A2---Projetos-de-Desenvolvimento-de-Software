@@ -1,15 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Treinador {
     private int treinadorId;
     private String nome;
-    private List<Pokemon> pokemonList;
-
-    public Treinador(int treinadorId,String nome){
+    public void setTreinadorId(int treinadorId) {
         this.treinadorId = treinadorId;
+    }
+
+    public void setNome(String nome) {
         this.nome = nome;
-        this.pokemonList = new ArrayList<>();
     }
 
     public int getTreinadorId() {
@@ -20,7 +17,4 @@ public class Treinador {
         return nome;
     }
 
-    public List<Pokemon> getPokemonList() {
-        return pokemonList;
-    }
 }
