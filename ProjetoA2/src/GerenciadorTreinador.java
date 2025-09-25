@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,14 +17,17 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     private List<String> timeDoTreinador = new ArrayList<>();
     Treinador treinador = new Treinador();
     
+    
     public void gerenciadorTreinador()
     {
         int escolhaMenuTreinador = 0;
         
         Menus menu = new Menus();
-        menu.menuTreinador();
-        escolhaMenuTreinador = scanner.nextInt();
+        
         do{
+            menu.menuTreinador();
+            escolhaMenuTreinador = scanner.nextInt();
+            scanner.nextLine();
             switch (escolhaMenuTreinador) {
                 case 1: 
                     adicionarTreinador();
@@ -49,21 +52,36 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     @Override
     public void adicionarTreinador(){
         System.out.println("--- Adicionar novo Treinador ---");
+        boolean verificadorId = false;
+        do{
 
-        System.out.print("Digite o ID do Treinador: ");
-        treinador.setTreinadorId(scanner.nextInt());
-        scanner.nextLine();
+            System.out.print("Digite o ID do Treinador: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+
+            if (id > 0 && id < 999999) {
+                treinador.setTreinadorId(id);
+                verificadorId = true;
+            }
+            else{
+                System.out.println("Coloque um número válido.");
+            }
+            
+           
+            
+        }while(!verificadorId);
+        
             
         System.out.print("Digite o nome do Treinador: ");
         String nome = scanner.nextLine();
         
-        // Simplificado: capitaliza a primeira letra e o resto em minúsculo
+        
         if (nome != null && !nome.isEmpty()) {
             nome = nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
-        }
+        };
         treinador.setNome(nome);
         
-        // Corrigido: remover a declaração duplicada da variável 'verificador'
+        
         boolean verificador = false;
         do{
             System.out.println("Coloque o numero de pokemons em que você deseja adicionar ao seu time (Máximo de 6 pokemons por treinador)");
@@ -83,7 +101,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                     } 
                     else {
                         System.out.println("Pokémon '" + nomeDesejado + "' não encontrado. Tente novamente.");
-                        i--; // Decrementa para que o usuário tente novamente
+                        i--; 
                     }
                 }
             }
@@ -108,10 +126,10 @@ public class GerenciadorTreinador implements CatalogoTreinador{
 
     @Override
     public void buscarTreinador(){
-        System.out.println("Qual o nome do pokemon você quer buscar? ");
+        System.out.println("Qual o nome do treinador que você quer buscar? ");
         String escolha = scanner.nextLine(); 
         
-        // Lógica de capitalização simplificada para a busca
+        
         if (escolha != null && !escolha.isEmpty()) {
             escolha = escolha.substring(0, 1).toUpperCase() + escolha.substring(1).toLowerCase();
         }
@@ -154,7 +172,6 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         try (BufferedReader br = new BufferedReader(new FileReader("Pokedex.txt"))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                // CORRIGIDO: A busca é feita convertendo ambas as strings para minúsculas
                 if (linha.toLowerCase().contains("nome: " + nomeDesejado.toLowerCase())) {
                     String[] partes = linha.split(";");
 
@@ -177,13 +194,14 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     private void salvarTime() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(treinadorPath, true))) {
             
-            bw.write("Id: " + treinador.getTreinadorId() + "; Nome: " + treinador.getNome() + ";");
-            bw.newLine();
+            bw.write("Id: " + treinador.getTreinadorId() + "; Nome: " + treinador.getNome() + ";[");
             
             for (String p : timeDoTreinador) {
-                bw.write("  " + p); 
-                bw.newLine(); 
+                bw.write(" " + p + " "); 
             }
+            bw.write(" ]"); 
+
+            System.out.println("------------------------------------------");
             bw.newLine(); 
 
             System.out.println("\nSeu time foi salvo com sucesso em '" + treinadorPath + "'.");
