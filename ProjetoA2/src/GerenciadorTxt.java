@@ -102,48 +102,47 @@ public class GerenciadorTxt {
 
     public void deletarLinhaTreinador(){
         String linhaParaRemover;
+        System.out.println("------------------------------------------");
         System.out.println("Qual o nome que você quer apagar? ");
         linhaParaRemover = scanner.nextLine(); 
-        boolean temMaiuscula = false;
-
-        for (char c : linhaParaRemover.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                temMaiuscula = true;
-            }
-        }
-
-        if (temMaiuscula == false) {
-            String firstLetter = linhaParaRemover.substring(0, 1).toUpperCase();
-            String restOfStr = linhaParaRemover.substring(1);
-            linhaParaRemover = firstLetter + restOfStr;
+        
+        if (linhaParaRemover != null && !linhaParaRemover.isEmpty()) {
+            linhaParaRemover = linhaParaRemover.substring(0, 1).toUpperCase() + linhaParaRemover.substring(1).toLowerCase();
         }
         
-
         List<String> linhas = new ArrayList<>();
-        
-
+        boolean treinadorEncontrado = false; 
         
         try (BufferedReader reader = new BufferedReader(new FileReader(treinadorPath))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                if (!linha.contains("Nome: " + linhaParaRemover + ";")) {
+                if (linha.contains("Nome: " + linhaParaRemover + ";")) {
+                    treinadorEncontrado = true;
+                } else {
                     linhas.add(linha);
                 }
             }
-        }
-        catch(IOException e){
-            e.printStackTrace();
+        } catch(IOException e) {
+            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+            return; 
         }
         
-        
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(treinadorPath))) {
-            for (String linha : linhas) {
-                writer.write(linha);
-                writer.newLine();
-            }
-        }
-        catch(IOException e){}
-    }
 
+        if (treinadorEncontrado) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(treinadorPath))) {
+                for (String linha : linhas) {
+                    writer.write(linha);
+                    writer.newLine();
+                }
+            } catch(IOException e) {
+                System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
+            }
+                        System.out.println("Treinador removido com sucesso!");
+        } else {
+
+            System.out.println("Falha ao remover o treinador. Treinador '" + linhaParaRemover + "' não encontrado.");
+        }
+    }
+    
 
 }

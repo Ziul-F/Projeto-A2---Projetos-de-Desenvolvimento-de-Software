@@ -51,7 +51,9 @@ public class GerenciadorTreinador implements CatalogoTreinador{
 
     @Override
     public void adicionarTreinador(){
-        System.out.println("--- Adicionar novo Treinador ---");
+        System.out.println("------------------------------------------");
+        System.out.println("-------- Adicionar novo Treinador --------");
+        System.out.println("------------------------------------------");
         boolean verificadorId = false;
         do{
 
@@ -80,6 +82,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             nome = nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
         };
         treinador.setNome(nome);
+        System.out.println("------------------------------------------");
         
         
         boolean verificador = false;
@@ -110,6 +113,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             }
         } while (!verificador);
         salvarTime();
+        System.out.println("------------------------------------------");
     }
 
     @Override
@@ -117,7 +121,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         try {
             GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
             gerenciadorTxt.deletarLinhaTreinador();
-            System.out.println("Treinador removido com sucesso!");
+            System.out.println("------------------------------------------");
         }
         catch(Exception e){
             e.printStackTrace();
@@ -126,6 +130,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
 
     @Override
     public void buscarTreinador(){
+        System.out.println("------------------------------------------");
         System.out.println("Qual o nome do treinador que você quer buscar? ");
         String escolha = scanner.nextLine(); 
         
@@ -153,16 +158,21 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         if(verificadorBuscar == false){
             System.out.println("O Pokémon com o nome " + escolha + " nao foi encontrado.");
         }
+        System.out.println("------------------------------------------");
     }
 
     @Override
     public void listarTreinador(){
         GerenciadorTxt txt = new GerenciadorTxt();
-        System.out.println("--- Catálogo de Treinadores ---");
+        System.out.println("------------------------------------------");
+        System.out.println("-------- Catálogo de Treinadores ---------");
+        System.out.println("------------------------------------------");
         System.out.println("");
         txt.ListarTreinadores();
         System.out.println("");
-        System.out.println("Final do catálogo.");
+        System.out.println("------------------------------------------");
+        System.out.println("----------- Final do catálogo ------------");
+        System.out.println("------------------------------------------");
     }
     
     @Override

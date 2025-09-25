@@ -1,5 +1,5 @@
 public abstract interface Catalogo {
-    void adicionarPokemon(Pokemon pokemon);
+    void adicionarPokemon();
 
     void buscarPokemon() throws PokemonNaoEncontradoException;
 

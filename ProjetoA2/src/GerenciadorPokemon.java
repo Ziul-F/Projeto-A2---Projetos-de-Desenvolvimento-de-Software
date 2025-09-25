@@ -31,7 +31,7 @@ public class GerenciadorPokemon implements Catalogo {
         
             switch (escolha) {
                 case 1 :
-                    adicionarPokemon(null);
+                    adicionarPokemon();
                 break;
                 case 2:
                     deletarIformacao();
@@ -59,11 +59,12 @@ public class GerenciadorPokemon implements Catalogo {
     }
     
     @Override
-    public void adicionarPokemon(Pokemon pokemon) {
+    public void adicionarPokemon() {
 
         
-
-        System.out.println("--- Adicionar novo Pokémon ---");
+        System.out.println("------------------------------------------");
+        System.out.println("--------- Adicionar novo Pokémon ---------");
+        System.out.println("------------------------------------------");
 
                     System.out.print("Digite o ID do Pokémon: ");
                     int id = scanner.nextInt();
@@ -116,15 +117,18 @@ public class GerenciadorPokemon implements Catalogo {
 
                     Pokemon pokemons = new Pokemon(id, nome, tipo, nivel, habilidades);
 
-                    adicionarPokemon(pokemons);
+                    salvarPokemonNoArquivo(pokemons);
                     
                     
                     System.out.println("\nPokémon adicionado! Catálogo atual:");
+                    System.out.println("------------------------------------------");
     }
 
     @Override
     public void buscarPokemon() throws PokemonNaoEncontradoException{
-        
+
+        System.out.println("------------------------------------------");
+
         System.out.println("Qual o nome do pokemon você quer buscar? ");
         String escolha = scanner.nextLine(); 
         boolean verificadorBuscar = false;
@@ -162,32 +166,38 @@ public class GerenciadorPokemon implements Catalogo {
         if(verificadorBuscar == false){
             throw new PokemonNaoEncontradoException("O Pokémon com o nome " + escolha + " nao foi encontrado.");
         }
+        System.out.println("------------------------------------------");
     }
 
     @Override
     public void listarPokemon() {
         GerenciadorTxt txt = new GerenciadorTxt();
-        System.out.println("--- Catálogo de Pokémon ---");
+        System.out.println("------------------------------------------");
+        System.out.println("---------- Catálogo de Pokémon -----------");
+        System.out.println("------------------------------------------");
         System.out.println("");
         txt.ListarPokemon();
         System.out.println("");
-        System.out.println("Final do catálogo.");
+        System.out.println("------------------------------------------");
+        System.out.println("----------- Final do catálogo ------------");
+        System.out.println("------------------------------------------");
     }
 
-    public void salvarCadastro() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoTxt))) {
-            for (Pokemon p : catalogo.values()) {
-                writer.write("Id: " + p.getIdPokemon() + "; Nome: " + p.getNome() + "; tipo: " + p.getTipo() + "; Nível: " + p.getNivel()+ "; Habilidades: " + p.getHabilidadeList());
-                writer.newLine();
-            }
+    private void salvarPokemonNoArquivo(Pokemon pokemon) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoTxt, true))) { 
+            writer.write("Id: " + pokemon.getIdPokemon() + "; Nome: " + pokemon.getNome() + "; Tipo: " + pokemon.getTipo() + "; Nível: " + pokemon.getNivel() + "; Habilidades: " + pokemon.getHabilidadeList());
+            writer.newLine();
+            System.out.println("Pokémon " + pokemon.getNome() + " salvo no arquivo.");
         } catch (IOException e) {
-            System.err.println("Erro ao salvar o catálogo: " + e.getMessage());
+            System.err.println("Erro ao salvar o Pokémon: " + e.getMessage());
         }
     }
 
     @Override
     public void mudarInformacao() {
-        System.out.println("--- Mudar Informação de um Pokémon ---");
+        System.out.println("------------------------------------------");
+        System.out.println("----- Mudar Informação de um Pokémon -----");
+        System.out.println("------------------------------------------");
         System.out.print("Digite o nome do Pokémon que você quer editar: ");
         String nomeParaEditar = scanner.nextLine();
         String primeiraLetra = nomeParaEditar.substring(0, 1).toUpperCase();
@@ -198,23 +208,19 @@ public class GerenciadorPokemon implements Catalogo {
             List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
             boolean pokemonEncontrado = false;
 
-            // Cria uma nova lista para armazenar as linhas modificadas
             List<String> novasLinhas = new ArrayList<>();
 
             for (String linha : linhas) {
-                // Se a linha contém o nome do Pokémon, vamos editá-la
                 if (linha.contains("Nome: " + nomeParaEditar)) {
                     pokemonEncontrado = true;
                     String linhaAtualizada = processarModificacao(linha);
                     novasLinhas.add(linhaAtualizada);
                 } else {
-                    // Se não for o Pokémon, adiciona a linha como está
                     novasLinhas.add(linha);
                 }
             }
 
             if (pokemonEncontrado) {
-                // Reescreve o arquivo com as novas linhas
                 Files.write(Paths.get(arquivoTxt), novasLinhas);
                 System.out.println("Informações do Pokémon '" + nomeParaEditar + "' foram atualizadas com sucesso!");
             } else {
@@ -224,13 +230,12 @@ public class GerenciadorPokemon implements Catalogo {
         } catch (IOException e) {
             System.err.println("Erro ao ler/escrever o arquivo: " + e.getMessage());
         }
+        System.out.println("------------------------------------------");
     }
 
     private String processarModificacao(String linha) {
-        // --- Passo 1: Analisar a linha e extrair os dados ---
         Map<String, String> dados = new HashMap<>();
         try {
-            // Usa substrings para encontrar cada campo de forma segura
             String[] campos = {"Id", "Nome", "Tipo", "Nível", "Habilidades"};
             int inicio = 0;
             for (int i = 0; i < campos.length; i++) {
@@ -238,32 +243,27 @@ public class GerenciadorPokemon implements Catalogo {
                 String chaveCompleta = chave + ":";
                 int fim;
                 
-                // Encontra o fim da chave-valor
                 if (i < campos.length - 1) {
                     fim = linha.indexOf(campos[i + 1] + ":");
                 } else {
                     fim = linha.length();
                 }
 
-                // Extrai o valor
                 String valorBruto = linha.substring(linha.indexOf(chaveCompleta, inicio) + chaveCompleta.length(), fim).trim();
                 
-                // Remove o ';' se for o caso
                 if (valorBruto.endsWith(";")) {
                     valorBruto = valorBruto.substring(0, valorBruto.length() - 1);
                 }
                 
-                // Normaliza a chave e adiciona ao mapa
                 dados.put(normalizeString(chave), valorBruto.trim());
 
                 inicio = fim;
             }
         } catch (Exception e) {
             System.err.println("Erro ao analisar a linha do Pokémon: " + e.getMessage());
-            return linha; // Retorna a linha original para evitar corromper o arquivo
+            return linha; 
         }
         
-        // --- Passo 2: Exibir dados e pedir a alteração ---
         System.out.println("\n--- Dados atuais do Pokémon ---");
         dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
         System.out.println("---------------------------------");
@@ -271,7 +271,6 @@ public class GerenciadorPokemon implements Catalogo {
         System.out.print("\nQual campo você deseja mudar? (Id, Nome, Tipo, Nível, Habilidades): ");
         String campoParaMudar = scanner.nextLine().trim();
 
-        // --- Passo 3: Obter o novo valor e validar ---
         switch (campoParaMudar.toLowerCase()) {
             case "id":
             case "nivel":
@@ -297,7 +296,6 @@ public class GerenciadorPokemon implements Catalogo {
                 break;
         }
 
-        // --- Passo 4: Reconstruir a linha com os dados atualizados ---
         StringBuilder linhaReconstruida = new StringBuilder();
         linhaReconstruida.append("Id: ").append(dados.get("id")).append("; ");
         linhaReconstruida.append("Nome: ").append(dados.get("nome")).append("; ");
@@ -319,9 +317,11 @@ public class GerenciadorPokemon implements Catalogo {
     @Override
     public void deletarIformacao(){
         try {
+            System.out.println("------------------------------------------");
             GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
             gerenciadorTxt.deletarLinhaPokemon();
             System.out.println("Pokemon removido com sucesso!");
+            System.out.println("------------------------------------------");
         }
         catch(Exception e){
             e.printStackTrace();
@@ -334,6 +334,7 @@ public class GerenciadorPokemon implements Catalogo {
         verificador = true;
 
         do{
+            System.out.println("------------------------------------------");
             menu.tiposPokemon();
             int escolhatipos = scanner.nextInt();
             scanner.nextLine();
@@ -404,10 +405,9 @@ public class GerenciadorPokemon implements Catalogo {
             else{
                 System.out.println("Escolha um número de 1 a 15.");
             }
-            
+            System.out.println("------------------------------------------");
         }
-        while(verificador != true);
-        
+        while(!verificador);
     }
 
 }
