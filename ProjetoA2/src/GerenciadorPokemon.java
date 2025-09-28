@@ -1,5 +1,7 @@
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,9 +15,9 @@ public class GerenciadorPokemon implements Catalogo {
 
     Scanner scanner = new Scanner(System.in);
     GerenciadorTxt gerenciarOutPut = new GerenciadorTxt();
+    Logs log = new Logs();
     
 
-    private Map<String, Pokemon> catalogo = new HashMap<>();
     private static final String arquivoTxt = "Pokedex.txt";
     Menus menu = new Menus();
 
@@ -118,9 +120,15 @@ public class GerenciadorPokemon implements Catalogo {
                     Pokemon pokemons = new Pokemon(id, nome, tipo, nivel, habilidades);
 
                     salvarPokemonNoArquivo(pokemons);
+                    if (salvarPokemonNoArquivo(pokemons)) {
+                        this.log.gravarCadastroLogPokemon(pokemons);
+                        System.out.println("Pokémon adicionado!");
+                    }
+                    else{
+                        System.out.println("Falha no cadastro.");
+                    }
                     
                     
-                    System.out.println("\nPokémon adicionado! Catálogo atual:");
                     System.out.println("------------------------------------------");
     }
 
@@ -144,6 +152,7 @@ public class GerenciadorPokemon implements Catalogo {
             String restOfStr = escolha.substring(1);
             escolha = firstLetter + restOfStr;
         }
+        String termoDeBuscaExato = "Nome: " + escolha + ";";
 
 
         try{
@@ -152,7 +161,7 @@ public class GerenciadorPokemon implements Catalogo {
             
 
             for(String linha : linhas){
-                if(linha.contains("Nome: " + escolha)){
+                if(linha.contains(termoDeBuscaExato)){
                     System.out.println(linha);
                     verificadorBuscar = true;
                     break;
@@ -183,13 +192,15 @@ public class GerenciadorPokemon implements Catalogo {
         System.out.println("------------------------------------------");
     }
 
-    private void salvarPokemonNoArquivo(Pokemon pokemon) {
+    private boolean salvarPokemonNoArquivo(Pokemon pokemon) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoTxt, true))) { 
             writer.write("Id: " + pokemon.getIdPokemon() + "; Nome: " + pokemon.getNome() + "; Tipo: " + pokemon.getTipo() + "; Nível: " + pokemon.getNivel() + "; Habilidades: " + pokemon.getHabilidadeList());
             writer.newLine();
             System.out.println("Pokémon " + pokemon.getNome() + " salvo no arquivo.");
+            return true;
         } catch (IOException e) {
             System.err.println("Erro ao salvar o Pokémon: " + e.getMessage());
+            return false;
         }
     }
 
@@ -207,12 +218,23 @@ public class GerenciadorPokemon implements Catalogo {
         try {
             List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
             boolean pokemonEncontrado = false;
+            int idPokemonAtualizado = -1;
 
             List<String> novasLinhas = new ArrayList<>();
 
             for (String linha : linhas) {
                 if (linha.contains("Nome: " + nomeParaEditar)) {
                     pokemonEncontrado = true;
+
+                     try {
+                        int start = linha.indexOf("Id: ") + 4;
+                        int end = linha.indexOf(";", start);
+                        String idStr = linha.substring(start, end).trim();
+                         idPokemonAtualizado = Integer.parseInt(idStr);
+                    } catch (Exception e) {
+                        System.err.println("Aviso: Falha ao extrair ID para log de atualização.");
+                    }
+
                     String linhaAtualizada = processarModificacao(linha);
                     novasLinhas.add(linhaAtualizada);
                 } else {
@@ -223,6 +245,12 @@ public class GerenciadorPokemon implements Catalogo {
             if (pokemonEncontrado) {
                 Files.write(Paths.get(arquivoTxt), novasLinhas);
                 System.out.println("Informações do Pokémon '" + nomeParaEditar + "' foram atualizadas com sucesso!");
+
+                if (idPokemonAtualizado != -1) {
+                    Pokemon pokemonAtualizado = new Pokemon(idPokemonAtualizado); 
+                    this.log.gravarAtualizacaoLogPokemon(pokemonAtualizado); 
+                }
+
             } else {
                 System.out.println("Erro: O Pokémon com o nome '" + nomeParaEditar + "' não foi encontrado.");
             }
@@ -316,17 +344,79 @@ public class GerenciadorPokemon implements Catalogo {
 
     @Override
     public void deletarIformacao(){
-        try {
-            System.out.println("------------------------------------------");
-            GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
-            gerenciadorTxt.deletarLinhaPokemon();
-            System.out.println("Pokemon removido com sucesso!");
-            System.out.println("------------------------------------------");
+        
+        System.out.println("------------------------------------------");
+        String linhaParaRemover;
+        System.out.println("Qual o nome do pokemon que você quer apagar? ");
+        linhaParaRemover = scanner.nextLine(); 
+
+        if (linhaParaRemover != null && !linhaParaRemover.isEmpty()) {
+            linhaParaRemover = linhaParaRemover.substring(0, 1).toUpperCase() + linhaParaRemover.substring(1).toLowerCase();
+        } else {
+            System.out.println("Nome do Pokémon não pode ser vazio.");
+            return;
         }
-        catch(Exception e){
-            e.printStackTrace();
+        
+        List<String> linhas = new ArrayList<>();
+        String linhaDeletada = null; 
+        boolean pokemonEncontrado = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivoTxt))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                if (linha.contains("Nome: " + linhaParaRemover + ";")) {
+                    linhaDeletada = linha;
+                    pokemonEncontrado = true;
+                } else {
+                    linhas.add(linha);
+                }
+            }
+        } catch(IOException e){
+            System.err.println("Erro ao ler o arquivo de Pokémons: " + e.getMessage());
+            return; 
         }
+
+        if (!pokemonEncontrado) {
+            System.out.println("Pokémon '" + linhaParaRemover + "' não encontrado.");
+            return;
+        }
+        
+        int idPokemon = -1;
+        if (linhaDeletada != null) {
+            try {
+                int start = linhaDeletada.indexOf("Id: ") + 4;
+                int end = linhaDeletada.indexOf(";", start);
+                String idStr = linhaDeletada.substring(start, end).trim();
+                idPokemon = Integer.parseInt(idStr);
+            } catch (Exception e) {
+                System.err.println("Aviso: ID do Pokémon não pôde ser extraído. O log será incompleto.");
+            }
+        }
+
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivoTxt))) {
+            for (String linha : linhas) {
+                writer.write(linha);
+                writer.newLine();
+            }
+            
+
+            if (idPokemon != -1) {
+                Pokemon pokemonDeletado = new Pokemon(idPokemon); 
+                this.log.gravarDeletLogPokemon(pokemonDeletado); 
+            }
+
+            System.out.println("Pokémon '" + linhaParaRemover + "' removido com sucesso!");
+
+        } catch(IOException e){
+            System.err.println("Erro ao reescrever o arquivo após a deleção: " + e.getMessage());
+            return; 
+        }
+
+
+        System.out.println("------------------------------------------");
     };
+
 
     public void escolhaTipos(){
 

@@ -14,6 +14,10 @@ public class Pokemon {
         this.nivel = nivel;
         this.habilidades = habilidades;
     }
+    
+    public Pokemon(int id) {
+        this.idPokemon = id;
+    }
 
     public String getNome() {
         return nome;

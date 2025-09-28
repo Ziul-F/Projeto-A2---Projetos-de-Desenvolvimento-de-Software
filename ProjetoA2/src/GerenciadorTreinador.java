@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class GerenciadorTreinador implements CatalogoTreinador{
@@ -16,7 +18,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     String treinadorPath = "Treinadores.txt";
     private List<String> timeDoTreinador = new ArrayList<>();
     Treinador treinador = new Treinador();
-    
+    Logs log = new Logs();
     
     public void gerenciadorTreinador()
     {
@@ -96,7 +98,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                     System.out.println("Digite o nome do pokemon.");
                     String nomeDesejado = scanner.nextLine();
                     
-                    String pokemonEncontrado = buscarPokemonNoArquivo(nomeDesejado);
+                    String pokemonEncontrado = buscarTreinadorNoArquivo(nomeDesejado);
 
                     if (pokemonEncontrado != null) {
                         timeDoTreinador.add(pokemonEncontrado);
@@ -112,20 +114,84 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 System.out.println("coloque um número entre 1 e 6.");
             }
         } while (!verificador);
-        salvarTime();
+        if (salvarTime()){ log.gravarCadastroLogTreinador(treinador);}
+        else{System.err.println("Erro ao salvar o cadastro no Log;");}
         System.out.println("------------------------------------------");
     }
 
     @Override
     public void deletarIformacaoTreinador(){
-        try {
-            GerenciadorTxt gerenciadorTxt = new GerenciadorTxt();
-            gerenciadorTxt.deletarLinhaTreinador();
-            System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------");
+        String linhaParaRemover;
+        System.out.println("Qual o nome do treinador que você quer apagar? ");
+         linhaParaRemover = scanner.nextLine(); 
+
+        if (linhaParaRemover != null && !linhaParaRemover.isEmpty()) {
+            linhaParaRemover = linhaParaRemover.substring(0, 1).toUpperCase() + linhaParaRemover.substring(1).toLowerCase();
+        } else {
+            System.out.println("Nome do treinador não pode ser vazio.");
+            return;
         }
-        catch(Exception e){
-            e.printStackTrace();
+        
+        List<String> linhas = new ArrayList<>();
+        String linhaDeletada = null; 
+        boolean pokemonEncontrado = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(treinadorPath))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                if (linha.contains("Nome: " + linhaParaRemover + ";")) {
+                    linhaDeletada = linha;
+                    pokemonEncontrado = true;
+                } else {
+                    linhas.add(linha);
+                }
+            }
+        } catch(IOException e){
+            System.err.println("Erro ao ler o arquivo de Treinadores: " + e.getMessage());
+            return; 
         }
+
+        if (!pokemonEncontrado) {
+            System.out.println("Treinador '" + linhaParaRemover + "' não encontrado.");
+            return;
+        }
+        
+        int idTreinador = -1;
+        if (linhaDeletada != null) {
+            try {
+                int start = linhaDeletada.indexOf("Id: ") + 4;
+                int end = linhaDeletada.indexOf(";", start);
+                String idStr = linhaDeletada.substring(start, end).trim();
+                idTreinador = Integer.parseInt(idStr);
+            } catch (Exception e) {
+                System.err.println("Aviso: ID do Pokémon não pôde ser extraído. O log será incompleto.");
+            }
+        }
+
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(treinadorPath))) {
+            for (String linha : linhas) {
+                writer.write(linha);
+                writer.newLine();
+            }
+            
+
+            if (idTreinador != -1) {
+                Treinador treinadorDeletado = new Treinador(); 
+                treinadorDeletado.setTreinadorId(idTreinador);
+                this.log.gravarDeletLogTreinador(treinadorDeletado); 
+            }
+
+            System.out.println("Pokémon '" + linhaParaRemover + "' removido com sucesso!");
+
+        } catch(IOException e){
+            System.err.println("Erro ao reescrever o arquivo após a deleção: " + e.getMessage());
+            return; 
+        }
+
+
+        System.out.println("------------------------------------------");
     }
 
     @Override
@@ -133,11 +199,11 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         System.out.println("------------------------------------------");
         System.out.println("Qual o nome do treinador que você quer buscar? ");
         String escolha = scanner.nextLine(); 
-        
-        
+    
         if (escolha != null && !escolha.isEmpty()) {
             escolha = escolha.substring(0, 1).toUpperCase() + escolha.substring(1).toLowerCase();
         }
+        String termoDeBuscaExato = "Nome: " + escolha + ";";
         
         boolean verificadorBuscar = false;
 
@@ -145,7 +211,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             List<String> linhas = Files.readAllLines(Paths.get(treinadorPath));
             
             for(String linha : linhas){
-                if(linha.contains("Nome: " + escolha)){
+                if(linha.contains(termoDeBuscaExato)){
                     System.out.println(linha);
                     verificadorBuscar = true;
                     break;
@@ -156,7 +222,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             System.out.println("Ocorreu um erro ao ler o arquivo.");
         }
         if(verificadorBuscar == false){
-            System.out.println("O Pokémon com o nome " + escolha + " nao foi encontrado.");
+            System.out.println("O Treinador com o nome " + escolha + " nao foi encontrado.");
         }
         System.out.println("------------------------------------------");
     }
@@ -176,10 +242,68 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     }
     
     @Override
-    public void mudarInformacaoTreinador(){}
+    public void mudarInformacaoTreinador() {
+        System.out.println("------------------------------------------");
 
-    private String buscarPokemonNoArquivo(String nomeDesejado) {
-        try (BufferedReader br = new BufferedReader(new FileReader("Pokedex.txt"))) {
+
+        try {
+            List<String> linhas = Files.readAllLines(Paths.get(treinadorPath));
+            boolean treinadorEncontrado = false;
+            int idTreinadorAtualizado = -1; 
+            List<String> novasLinhas = new ArrayList<>();
+
+            System.out.println(" Qual o nome do treinador que voce deseja mudar? ");
+            String nome = scanner.nextLine();
+            if (nome != null && !nome.isEmpty()) {
+            nome = nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
+            };
+        treinador.setNome(nome);
+
+            for (String linha : linhas) {
+                
+                if (linha.contains(nome)) {
+                    treinadorEncontrado = true;
+                    
+                    if (linha != null) {
+                        try {
+                            int start = linha.indexOf("Id: ") + 4;
+                            int end = linha.indexOf(";", start);
+                            String idStr = linha.substring(start, end).trim();
+                            idTreinadorAtualizado = Integer.parseInt(idStr);
+                        } catch (Exception e) {
+                            System.err.println("Aviso: ID do Pokémon não pôde ser extraído. O log será incompleto.");
+                        }
+                    }
+                    
+
+                    String linhaAtualizada = processarModificacaoTreinador(linha);
+                    novasLinhas.add(linhaAtualizada);
+                } else {
+                    novasLinhas.add(linha);
+                }
+            }
+
+            if (treinadorEncontrado) {
+                Files.write(Paths.get(treinadorPath), novasLinhas);
+
+                if (idTreinadorAtualizado != -1) {
+                    Treinador t = new Treinador();
+                    t.setTreinadorId(idTreinadorAtualizado);
+                    this.log.gravarAtualizacaoLogTreinador(t); 
+                }
+                System.out.println("Informações do Treinador atualizadas!");
+            } else {
+                System.out.println("Treinador não encontrado.");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Erro ao processar arquivo: " + e.getMessage());
+        }
+        System.out.println("------------------------------------------");
+    }
+
+    private String buscarTreinadorNoArquivo(String nomeDesejado) {
+        try (BufferedReader br = new BufferedReader(new FileReader(treinadorPath))) {
             String linha;
             while ((linha = br.readLine()) != null) {
                 if (linha.toLowerCase().contains("nome: " + nomeDesejado.toLowerCase())) {
@@ -194,14 +318,14 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 }
             }
         } catch (IOException e) {
-            System.err.println("Erro ao ler o arquivo de Pokémons: " + e.getMessage());
+            System.err.println("Erro ao ler o arquivo de treinadores: " + e.getMessage());
         } catch (NumberFormatException e) {
             System.err.println("Erro de formato ao extrair o ID.");
         }
         return null; 
     }
 
-    private void salvarTime() {
+    private boolean salvarTime() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(treinadorPath, true))) {
             
             bw.write("Id: " + treinador.getTreinadorId() + "; Nome: " + treinador.getNome() + ";[");
@@ -215,8 +339,82 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             bw.newLine(); 
 
             System.out.println("\nSeu time foi salvo com sucesso em '" + treinadorPath + "'.");
+            return true;
         } catch (IOException e) {
             System.err.println("Erro ao salvar o time: " + e.getMessage());
+            return false;
         }
+    }
+
+
+    private String processarModificacaoTreinador(String linhaOriginal) {
+        Map<String, String> dados = new HashMap<>();
+        
+
+        try {
+            String[] campos = {"Id", "Nome", "Time"}; 
+            int inicio = 0;
+            
+            for (int i = 0; i < campos.length; i++) {
+                String chave = campos[i];
+                String chaveCompleta = chave + ":";
+                int fim;
+                
+
+                if (i < campos.length - 1) {
+                    fim = linhaOriginal.indexOf(campos[i + 1] + ":");
+                } else {
+                    fim = linhaOriginal.length(); 
+                }
+
+                String valorBruto = linhaOriginal.substring(linhaOriginal.indexOf(chaveCompleta, inicio) + chaveCompleta.length(), fim).trim();
+                
+                if (valorBruto.endsWith(";") || valorBruto.endsWith("]")) {
+                    valorBruto = valorBruto.substring(0, valorBruto.length() - 1).trim();
+                }
+                
+                dados.put(chave.toLowerCase(), valorBruto);
+
+                inicio = fim;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao analisar a linha do Treinador para edição: " + e.getMessage());
+            return linhaOriginal;
+        }
+
+        
+        System.out.println("\n--- Dados atuais do Treinador ---");
+        dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
+        System.out.println("---------------------------------");
+        
+        System.out.print("\nQual campo você deseja mudar? (Nome, ID, Time): ");
+        String campoParaMudar = scanner.nextLine().trim().toLowerCase();
+
+        if (campoParaMudar.equals("nome") || campoParaMudar.equals("id")) {
+            System.out.print("Digite o novo valor para '" + campoParaMudar + "': ");
+            String novoValor = scanner.nextLine();
+            
+            if (campoParaMudar.equals("nome") && novoValor != null && !novoValor.isEmpty()) {
+                novoValor = novoValor.substring(0, 1).toUpperCase() + novoValor.substring(1).toLowerCase();
+            }
+            
+            dados.put(campoParaMudar, novoValor);
+            System.out.println("Campo '" + campoParaMudar + "' atualizado para: " + novoValor);
+            
+        } else if (campoParaMudar.equals("time")) {
+            System.out.println("Aviso: Alterar o time é um processo complexo e requer lógica adicional.");
+        }
+        else {
+            System.out.println("Erro: Campo '" + campoParaMudar + "' não encontrado ou não editável.");
+        }
+
+
+
+        StringBuilder linhaReconstruida = new StringBuilder();
+        linhaReconstruida.append("Id: ").append(dados.get("id")).append(";"); 
+        linhaReconstruida.append(" Nome: ").append(dados.get("nome")).append(";"); 
+        linhaReconstruida.append(" [").append(dados.get("time")).append(" ]");
+
+        return linhaReconstruida.toString();
     }
 }

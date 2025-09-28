@@ -1,6 +1,8 @@
 public class Treinador {
     private int treinadorId;
     private String nome;
+
+    
     public void setTreinadorId(int treinadorId) {
         this.treinadorId = treinadorId;
     }

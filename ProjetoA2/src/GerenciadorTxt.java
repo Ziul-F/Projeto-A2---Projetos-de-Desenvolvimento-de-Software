@@ -14,6 +14,7 @@ public class GerenciadorTxt {
     Scanner scanner = new Scanner(System.in);
     String filePath = "Pokedex.txt";
     String treinadorPath = "Treinadores.txt";
+    Logs log = new Logs();
 
     public List<String> getLinhas() {
         return linhas;
@@ -37,50 +38,7 @@ public class GerenciadorTxt {
         }
     };
 
-    public void deletarLinhaPokemon(){
-        String linhaParaRemover;
-        System.out.println("Qual o nome do pokemon que você quer apagar? ");
-        linhaParaRemover = scanner.nextLine(); 
-        boolean temMaiuscula = false;
-
-        for (char c : linhaParaRemover.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                temMaiuscula = true;
-            }
-        }
-
-        if (temMaiuscula == false) {
-            String firstLetter = linhaParaRemover.substring(0, 1).toUpperCase();
-            String restOfStr = linhaParaRemover.substring(1);
-            linhaParaRemover = firstLetter + restOfStr;
-        }
-        
-
-        List<String> linhas = new ArrayList<>();
-        
-
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String linha;
-            while ((linha = reader.readLine()) != null) {
-                if (!linha.contains("Nome: " + linhaParaRemover + ";")) {
-                    linhas.add(linha);
-                }
-            }
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-        
-        
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (String linha : linhas) {
-                writer.write(linha);
-                writer.newLine();
-            }
-        }
-        catch(IOException e){}
-    }
+    
 
     public void lerArquivoTreinador(){
         
@@ -100,7 +58,7 @@ public class GerenciadorTxt {
         }
     };
 
-    public void deletarLinhaTreinador(){
+  public boolean deletarLinhaTreinador(Logs log) {
         String linhaParaRemover;
         System.out.println("------------------------------------------");
         System.out.println("Qual o nome que você quer apagar? ");
@@ -111,38 +69,58 @@ public class GerenciadorTxt {
         }
         
         List<String> linhas = new ArrayList<>();
-        boolean treinadorEncontrado = false; 
+        String linhaDeletada = null; 
         
         try (BufferedReader reader = new BufferedReader(new FileReader(treinadorPath))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
                 if (linha.contains("Nome: " + linhaParaRemover + ";")) {
-                    treinadorEncontrado = true;
+                    linhaDeletada = linha; 
                 } else {
                     linhas.add(linha);
                 }
             }
         } catch(IOException e) {
             System.err.println("Erro ao ler o arquivo: " + e.getMessage());
-            return; 
+            return false; 
         }
         
+        if (linhaDeletada != null) { 
+            int idTreinador = -1; 
+            
+            try {
+                int start = linhaDeletada.indexOf("Id: ") + 4;
+                int end = linhaDeletada.indexOf(";", start);
+                String idStr = linhaDeletada.substring(start, end).trim();
+                idTreinador = Integer.parseInt(idStr);
+            } catch (Exception e) {
+                System.err.println("ERRO: Não foi possível extrair o ID da linha deletada. Log não registrado.");
+            }
 
-        if (treinadorEncontrado) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(treinadorPath))) {
                 for (String linha : linhas) {
                     writer.write(linha);
                     writer.newLine();
                 }
             } catch(IOException e) {
-                System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
+                System.err.println("ERRO: Falha na reescrita do arquivo (deleção).");
+                return false; 
             }
-                        System.out.println("Treinador removido com sucesso!");
-        } else {
+            
 
-            System.out.println("Falha ao remover o treinador. Treinador '" + linhaParaRemover + "' não encontrado.");
+            if (idTreinador != -1) {
+                Treinador treinadorDeletado = new Treinador();
+                treinadorDeletado.setTreinadorId(idTreinador);
+                log.gravarDeletLogTreinador(treinadorDeletado);
+            }
+
+            System.out.println("Treinador removido com sucesso!");
+            return true;
+            
+        } else {
+            System.out.println(" Falha ao remover o treinador. Treinador '" + linhaParaRemover + "' não encontrado.");
+            return false;
         }
     }
-    
 
 }
