@@ -17,7 +17,6 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     Scanner scanner = new Scanner(System.in);
     String treinadorPath = "Treinadores.txt";
     private List<String> timeDoTreinador = new ArrayList<>();
-    Treinador treinador = new Treinador();
     Logs log = new Logs();
     
     public void gerenciadorTreinador()
@@ -57,6 +56,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         System.out.println("-------- Adicionar novo Treinador --------");
         System.out.println("------------------------------------------");
         boolean verificadorId = false;
+        Treinador novoTreinador = new Treinador();
         do{
 
             System.out.print("Digite o ID do Treinador: ");
@@ -64,7 +64,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             scanner.nextLine();
 
             if (id > 0 && id < 999999) {
-                treinador.setTreinadorId(id);
+                novoTreinador.setTreinadorId(id);
                 verificadorId = true;
             }
             else{
@@ -78,12 +78,9 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             
         System.out.print("Digite o nome do Treinador: ");
         String nome = scanner.nextLine();
+        nome = formatarNome(nome);
+        novoTreinador.setNome(nome);
         
-        
-        if (nome != null && !nome.isEmpty()) {
-            nome = nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
-        };
-        treinador.setNome(nome);
         System.out.println("------------------------------------------");
         
         
@@ -98,7 +95,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                     System.out.println("Digite o nome do pokemon.");
                     String nomeDesejado = scanner.nextLine();
                     
-                    String pokemonEncontrado = buscarTreinadorNoArquivo(nomeDesejado);
+                    String pokemonEncontrado = buscarPokemonNoArquivo(nomeDesejado);
 
                     if (pokemonEncontrado != null) {
                         timeDoTreinador.add(pokemonEncontrado);
@@ -114,7 +111,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 System.out.println("coloque um número entre 1 e 6.");
             }
         } while (!verificador);
-        if (salvarTime()){ log.gravarCadastroLogTreinador(treinador);}
+        if (salvarTime(novoTreinador)){ log.gravarCadastroLogTreinador(novoTreinador);}
         else{System.err.println("Erro ao salvar o cadastro no Log;");}
         System.out.println("------------------------------------------");
     }
@@ -124,14 +121,9 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         System.out.println("------------------------------------------");
         String linhaParaRemover;
         System.out.println("Qual o nome do treinador que você quer apagar? ");
-         linhaParaRemover = scanner.nextLine(); 
-
-        if (linhaParaRemover != null && !linhaParaRemover.isEmpty()) {
-            linhaParaRemover = linhaParaRemover.substring(0, 1).toUpperCase() + linhaParaRemover.substring(1).toLowerCase();
-        } else {
-            System.out.println("Nome do treinador não pode ser vazio.");
-            return;
-        }
+        linhaParaRemover = scanner.nextLine(); 
+        linhaParaRemover = formatarNome(linhaParaRemover);
+        
         
         List<String> linhas = new ArrayList<>();
         String linhaDeletada = null; 
@@ -183,7 +175,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 this.log.gravarDeletLogTreinador(treinadorDeletado); 
             }
 
-            System.out.println("Pokémon '" + linhaParaRemover + "' removido com sucesso!");
+            System.out.println("Treinador '" + linhaParaRemover + "' removido com sucesso!");
 
         } catch(IOException e){
             System.err.println("Erro ao reescrever o arquivo após a deleção: " + e.getMessage());
@@ -199,10 +191,8 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         System.out.println("------------------------------------------");
         System.out.println("Qual o nome do treinador que você quer buscar? ");
         String escolha = scanner.nextLine(); 
-    
-        if (escolha != null && !escolha.isEmpty()) {
-            escolha = escolha.substring(0, 1).toUpperCase() + escolha.substring(1).toLowerCase();
-        }
+        escolha = formatarNome(escolha);
+        
         String termoDeBuscaExato = "Nome: " + escolha + ";";
         
         boolean verificadorBuscar = false;
@@ -254,14 +244,13 @@ public class GerenciadorTreinador implements CatalogoTreinador{
 
             System.out.println(" Qual o nome do treinador que voce deseja mudar? ");
             String nome = scanner.nextLine();
-            if (nome != null && !nome.isEmpty()) {
-            nome = nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
-            };
-        treinador.setNome(nome);
+            nome = formatarNome(nome);
 
+            String termoDeBuscaExato = "Nome: " + nome + ";";
+            
             for (String linha : linhas) {
                 
-                if (linha.contains(nome)) {
+                if (linha.contains(termoDeBuscaExato)) {
                     treinadorEncontrado = true;
                     
                     if (linha != null) {
@@ -302,7 +291,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         System.out.println("------------------------------------------");
     }
 
-    private String buscarTreinadorNoArquivo(String nomeDesejado) {
+    private String buscarPokemonNoArquivo(String nomeDesejado) {
         try (BufferedReader br = new BufferedReader(new FileReader(treinadorPath))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -325,10 +314,10 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         return null; 
     }
 
-    private boolean salvarTime() {
+    private boolean salvarTime(Treinador treinadorParaSalvar) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(treinadorPath, true))) {
             
-            bw.write("Id: " + treinador.getTreinadorId() + "; Nome: " + treinador.getNome() + ";[");
+            bw.write("Id: " + treinadorParaSalvar.getTreinadorId() + "; Nome: " + treinadorParaSalvar.getNome() + ";[");
             
             for (String p : timeDoTreinador) {
                 bw.write(" " + p + " "); 
@@ -417,6 +406,13 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         linhaReconstruida.append(" [").append(dados.get("time")).append(" ]");
 
         return linhaReconstruida.toString();
+    }
+
+    private String formatarNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            return "";
+        }
+        return nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
     }
 
     // ?: example for jUnit test

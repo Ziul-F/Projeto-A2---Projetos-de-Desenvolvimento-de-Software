@@ -41,9 +41,8 @@ public class GerenciadorPokemon implements Catalogo {
                 case 3:
                     try {
                         buscarPokemon();
-                    } catch (PokemonNaoEncontradoException e) { //uma geração automatica do VS por causa que o PokemonNaoEncontradoException não estava funcionando
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    } catch (PokemonNaoEncontradoException e) {
+                        System.out.println("Busca falhou:" + e.getMessage());
                     }
                     
                 break;
@@ -73,23 +72,10 @@ public class GerenciadorPokemon implements Catalogo {
                     scanner.nextLine();
             
                     System.out.print("Digite o nome do Pokémon: ");
-                    boolean temMaiuscula = false;
                     String nome = scanner.nextLine();
 
-                    for (char c : nome.toCharArray()) {
-                        if (Character.isUpperCase(c)) {
-                            temMaiuscula = true;
-                        }
-                    }
-
-                    if (temMaiuscula == false) {
-                        String firstLetter = nome.substring(0, 1).toUpperCase();
-                        String restOfStr = nome.substring(1);
-                        nome = firstLetter + restOfStr;
-                    }
+                    nome = formatarNome(nome);
                     
-            
-
                     escolhaTipos();
                     
             
@@ -119,7 +105,6 @@ public class GerenciadorPokemon implements Catalogo {
 
                     Pokemon pokemons = new Pokemon(id, nome, tipo, nivel, habilidades);
 
-                    salvarPokemonNoArquivo(pokemons);
                     if (salvarPokemonNoArquivo(pokemons)) {
                         this.log.gravarCadastroLogPokemon(pokemons);
                         System.out.println("Pokémon adicionado!");
@@ -133,26 +118,16 @@ public class GerenciadorPokemon implements Catalogo {
     }
 
     @Override
-    public void buscarPokemon() throws PokemonNaoEncontradoException{
+    public void buscarPokemon(){
 
         System.out.println("------------------------------------------");
 
         System.out.println("Qual o nome do pokemon você quer buscar? ");
-        String escolha = scanner.nextLine(); 
+        String nome = scanner.nextLine(); 
+        nome = formatarNome(nome);
         boolean verificadorBuscar = false;
-        boolean temMaiuscula = false;
-
-        for (char c : escolha.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                temMaiuscula = true;
-            }
-        }
-        if (temMaiuscula == false) {
-            String firstLetter = escolha.substring(0, 1).toUpperCase();
-            String restOfStr = escolha.substring(1);
-            escolha = firstLetter + restOfStr;
-        }
-        String termoDeBuscaExato = "Nome: " + escolha + ";";
+        
+        String termoDeBuscaExato = "Nome: " + nome + ";";
 
 
         try{
@@ -173,7 +148,7 @@ public class GerenciadorPokemon implements Catalogo {
             System.out.println("Ocorreu um erro ao ler o arquivo.");
         }
         if(verificadorBuscar == false){
-            throw new PokemonNaoEncontradoException("O Pokémon com o nome " + escolha + " nao foi encontrado.");
+            throw new PokemonNaoEncontradoException("O Pokémon com o nome " + nome + " nao foi encontrado.");
         }
         System.out.println("------------------------------------------");
     }
@@ -209,11 +184,14 @@ public class GerenciadorPokemon implements Catalogo {
         System.out.println("------------------------------------------");
         System.out.println("----- Mudar Informação de um Pokémon -----");
         System.out.println("------------------------------------------");
+
+
         System.out.print("Digite o nome do Pokémon que você quer editar: ");
-        String nomeParaEditar = scanner.nextLine();
-        String primeiraLetra = nomeParaEditar.substring(0, 1).toUpperCase();
-        String resto = nomeParaEditar.substring(1);
-        nomeParaEditar = primeiraLetra + resto;
+        String nome = scanner.nextLine();
+
+        nome = formatarNome(nome);
+        String termoDeBuscaExato = "Nome: " + nome + ";";
+        
 
         try {
             List<String> linhas = Files.readAllLines(Paths.get(arquivoTxt));
@@ -223,7 +201,7 @@ public class GerenciadorPokemon implements Catalogo {
             List<String> novasLinhas = new ArrayList<>();
 
             for (String linha : linhas) {
-                if (linha.contains("Nome: " + nomeParaEditar)) {
+                if (linha.contains(termoDeBuscaExato)) {
                     pokemonEncontrado = true;
 
                      try {
@@ -244,7 +222,7 @@ public class GerenciadorPokemon implements Catalogo {
 
             if (pokemonEncontrado) {
                 Files.write(Paths.get(arquivoTxt), novasLinhas);
-                System.out.println("Informações do Pokémon '" + nomeParaEditar + "' foram atualizadas com sucesso!");
+                System.out.println("Informações do Pokémon '" + nome + "' foram atualizadas com sucesso!");
 
                 if (idPokemonAtualizado != -1) {
                     Pokemon pokemonAtualizado = new Pokemon(idPokemonAtualizado); 
@@ -252,7 +230,7 @@ public class GerenciadorPokemon implements Catalogo {
                 }
 
             } else {
-                System.out.println("Erro: O Pokémon com o nome '" + nomeParaEditar + "' não foi encontrado.");
+                System.out.println("Erro: O Pokémon com o nome '" + nome + "' não foi encontrado.");
             }
 
         } catch (IOException e) {
@@ -346,16 +324,10 @@ public class GerenciadorPokemon implements Catalogo {
     public void deletarIformacao(){
         
         System.out.println("------------------------------------------");
-        String linhaParaRemover;
         System.out.println("Qual o nome do pokemon que você quer apagar? ");
-        linhaParaRemover = scanner.nextLine(); 
-
-        if (linhaParaRemover != null && !linhaParaRemover.isEmpty()) {
-            linhaParaRemover = linhaParaRemover.substring(0, 1).toUpperCase() + linhaParaRemover.substring(1).toLowerCase();
-        } else {
-            System.out.println("Nome do Pokémon não pode ser vazio.");
-            return;
-        }
+        String nome = scanner.nextLine(); 
+        nome = formatarNome(nome);
+        
         
         List<String> linhas = new ArrayList<>();
         String linhaDeletada = null; 
@@ -364,7 +336,7 @@ public class GerenciadorPokemon implements Catalogo {
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivoTxt))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                if (linha.contains("Nome: " + linhaParaRemover + ";")) {
+                if (linha.contains("Nome: " + nome + ";")) {
                     linhaDeletada = linha;
                     pokemonEncontrado = true;
                 } else {
@@ -377,7 +349,7 @@ public class GerenciadorPokemon implements Catalogo {
         }
 
         if (!pokemonEncontrado) {
-            System.out.println("Pokémon '" + linhaParaRemover + "' não encontrado.");
+            System.out.println("Pokémon '" + nome + "' não encontrado.");
             return;
         }
         
@@ -406,7 +378,7 @@ public class GerenciadorPokemon implements Catalogo {
                 this.log.gravarDeletLogPokemon(pokemonDeletado); 
             }
 
-            System.out.println("Pokémon '" + linhaParaRemover + "' removido com sucesso!");
+            System.out.println("Pokémon '" + nome + "' removido com sucesso!");
 
         } catch(IOException e){
             System.err.println("Erro ao reescrever o arquivo após a deleção: " + e.getMessage());
@@ -499,6 +471,13 @@ public class GerenciadorPokemon implements Catalogo {
         }
         while(!verificador);
     }
+
+    private String formatarNome(String nome) {
+    if (nome == null || nome.trim().isEmpty()) {
+        return "";
+    }
+    return nome.substring(0, 1).toUpperCase() + nome.substring(1).toLowerCase();
+}
 
     // ?: example for jUnit test
     public boolean TestUnitarioGerenciador(){
