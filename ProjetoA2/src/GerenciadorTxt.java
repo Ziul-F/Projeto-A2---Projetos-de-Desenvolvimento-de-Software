@@ -123,7 +123,6 @@ public class GerenciadorTxt {
         }
     }
 
-    // ?: example for jUnit test
     public boolean testGereciadorTxt(){
         return true;
     }
