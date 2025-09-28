@@ -500,4 +500,8 @@ public class GerenciadorPokemon implements Catalogo {
         while(!verificador);
     }
 
+    // ?: example for jUnit test
+    public boolean TestUnitarioGerenciador(){
+        return true;
+    }
 }

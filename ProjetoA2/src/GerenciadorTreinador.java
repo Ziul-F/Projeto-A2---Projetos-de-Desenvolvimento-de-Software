@@ -348,6 +348,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
 
 
     private String processarModificacaoTreinador(String linhaOriginal) {
+
         Map<String, String> dados = new HashMap<>();
         
 
@@ -416,5 +417,10 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         linhaReconstruida.append(" [").append(dados.get("time")).append(" ]");
 
         return linhaReconstruida.toString();
+    }
+
+    // ?: example for jUnit test
+    public boolean testGereciadorTreinador(){
+        return true;
     }
 }

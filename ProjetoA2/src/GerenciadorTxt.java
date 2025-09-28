@@ -58,7 +58,7 @@ public class GerenciadorTxt {
         }
     };
 
-  public boolean deletarLinhaTreinador(Logs log) {
+    public boolean deletarLinhaTreinador(Logs log) {
         String linhaParaRemover;
         System.out.println("------------------------------------------");
         System.out.println("Qual o nome que você quer apagar? ");
@@ -123,4 +123,8 @@ public class GerenciadorTxt {
         }
     }
 
+    // ?: example for jUnit test
+    public boolean testGereciadorTxt(){
+        return true;
+    }
 }
