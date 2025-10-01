@@ -4,9 +4,7 @@ Luiz Santos / Nicollas Hubie
 
 # DIAGRAMA DE CLASSE 
 
-[UML Class Diagram (1).pdf](https://github.com/user-attachments/files/22642930/UML.Class.Diagram.1.pdf)
-
-Link para melhor vizualização: https://miro.com/welcomeonboard/d2hnWXpSeHRoSWhMWTNkYURhM3NqTkFWN052ZUdpenNIRnZObXcvcVJyMXI3VDFsaW10YXZPOXdLb0FZVjVuc05hYzdRbFErdXdJN3dDb1JHYm1lU2duUXVxV3hUNWFXTFZvdjgvdFIvQUxjVEJveHRGcTh1OGJLMTQ1ZS96djJBS2NFMDFkcUNFSnM0d3FEN050ekl3PT0hdjE=?share_link_id=794451705996
+https://miro.com/welcomeonboard/d2hnWXpSeHRoSWhMWTNkYURhM3NqTkFWN052ZUdpenNIRnZObXcvcVJyMXI3VDFsaW10YXZPOXdLb0FZVjVuc05hYzdRbFErdXdJN3dDb1JHYm1lU2duUXVxV3hUNWFXTFZvdjgvdFIvQUxjVEJveHRGcTh1OGJLMTQ1ZS96djJBS2NFMDFkcUNFSnM0d3FEN050ekl3PT0hdjE=?share_link_id=794451705996
 
 # EXPLICAÇÃO DO CÓDIGO
 
