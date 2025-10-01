@@ -1,3 +1,8 @@
+package View;
+
+import Service.GerenciadorPokemon;
+import Service.GerenciadorTreinador;
+
 import java.util.*;
 
 public class Main {

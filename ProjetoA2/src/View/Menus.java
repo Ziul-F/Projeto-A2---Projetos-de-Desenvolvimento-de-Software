@@ -1,3 +1,5 @@
+package View;
+
 public class Menus {
     public void menuPokemon()
     {
@@ -5,9 +7,9 @@ public class Menus {
         System.out.println("---------- BEM VINDO A POKÉDEX -----------");
         System.out.println("------------------------------------------");
         System.out.println("Escolha um número:");   
-        System.out.println("1 - Adicionar Pokemon;");
-        System.out.println("2 - Deletar Pokemon;");
-        System.out.println("3 - Buscar Pokemon;");
+        System.out.println("1 - Adicionar Service.Pokemon;");
+        System.out.println("2 - Deletar Service.Pokemon;");
+        System.out.println("3 - Buscar Service.Pokemon;");
         System.out.println("4 - Listar  Pokemons;");
         System.out.println("5 - Atualizar Informações");
         System.out.println("6 - Sair.");
@@ -20,9 +22,9 @@ public class Menus {
         System.out.println("-- BEM VINDO AO GERENCIADOR DE TREINADORES --");
         System.out.println("------------------------------------------");
         System.out.println("Escolha um número:");   
-        System.out.println("1 - Adicionar Treinador;");
-        System.out.println("2 - Deletar Treinador;");
-        System.out.println("3 - Buscar Treinador;");
+        System.out.println("1 - Adicionar Service.Treinador;");
+        System.out.println("2 - Deletar Service.Treinador;");
+        System.out.println("3 - Buscar Service.Treinador;");
         System.out.println("4 - Listar  Treinadores;");
         System.out.println("5 - Atualizar Informações");
         System.out.println("6 - Sair.");

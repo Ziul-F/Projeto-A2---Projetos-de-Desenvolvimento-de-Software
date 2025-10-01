@@ -16,17 +16,17 @@ O projeto consiste em um sistema de gerenciamento em Java que simula uma Pokéde
 O sistema foi estruturado para aplicar os três pilares da Programação Orientada a Objetos:
 
 # 2.1. Encapsulamento
-Definição: Todos os atributos nas classes de modelo (Pokemon, Treinador, Habilidade) foram definidos como privados (private).
+Definição: Todos os atributos nas classes de modelo (Service.Pokemon, Service.Treinador, Service.Habilidade) foram definidos como privados (private).
 
 Acesso Controlado: O acesso e a modificação desses dados são realizados exclusivamente por meio de métodos públicos (getters e setters), garantindo a integridade dos objetos e protegendo contra alterações indesejadas.
 
 # 2.2. Polimorfismo
-Contratos: O polimorfismo é aplicado por meio da criação de interfaces que atuam como contratos de comportamento: Catalogo e CatalogoTreinador.
+Contratos: O polimorfismo é aplicado por meio da criação de interfaces que atuam como contratos de comportamento: Service.Catalogo e Service.CatalogoTreinador.
 
-Implementação: As classes GerenciadorPokemon e GerenciadorTreinador implementam essas interfaces e sobrescrevem os métodos CRUD (como adicionar e buscar), cada um com sua lógica específica.
+Implementação: As classes Service.GerenciadorPokemon e Service.GerenciadorTreinador implementam essas interfaces e sobrescrevem os métodos CRUD (como adicionar e buscar), cada um com sua lógica específica.
 
 # 2.3. Herança e Tratamento de Exceções
-Herança: O conceito de herança é utilizado para criar uma exceção especializada: PokemonNaoEncontradoException. Esta classe herda de RuntimeException, promovendo uma estrutura organizada para lidar com erros de lógica de negócio (ex: quando uma busca falha em GerenciadorPokemon).
+Herança: O conceito de herança é utilizado para criar uma exceção especializada: Service.PokemonNaoEncontradoException. Esta classe herda de RuntimeException, promovendo uma estrutura organizada para lidar com erros de lógica de negócio (ex: quando uma busca falha em Service.GerenciadorPokemon).
 
 Tratamento Robusto: O código inclui blocos try-catch para gerenciar exceções de I/O (leitura/escrita de arquivos) e garantir que o sistema lide com entradas de dados inválidas de forma controlada.
 
@@ -35,25 +35,25 @@ A arquitetura do projeto pode ser dividida nas seguintes camadas funcionais:
 
 Camada	Classes Envolvidas	Responsabilidade
 Modelos (Entidades)
-Pokemon, Treinador, Habilidade	
+Service.Pokemon, Service.Treinador, Service.Habilidade	
 Definem a estrutura de dados e as características das entidades. 
-A classe Pokemon utiliza uma Collection (ArrayList) para armazenar múltiplas Habilidades.
+A classe Service.Pokemon utiliza uma Collection (ArrayList) para armazenar múltiplas Habilidades.
 
 Contratos	
-Catalogo, CatalogoTreinador	
+Service.Catalogo, Service.CatalogoTreinador	
 Fornecem as assinaturas dos métodos de CRUD, aplicando o Polimorfismo.
 
 Lógica de Negócio	
-GerenciadorPokemon, GerenciadorTreinador	
+Service.GerenciadorPokemon, Service.GerenciadorTreinador	
 Contêm a lógica para manipular os dados, validar regras de negócio (ex: limite de 6 Pokémons por treinador) e coordenar a persistência. 
 Utilizam Map (HashMap) internamente para processar modificações de dados.
 
 Persistência / I/O	
-GerenciadorTxt, Logs	
+Dados.GerenciadorTxt, Dados.Logs	
 Gerenciam a leitura e escrita em arquivos de texto (Pokedex.txt, Treinadores.txt). 
-A classe Logs fornece um serviço de auditoria, registrando todas as ações de CRUD no log.txt.
-Interface (UI)	Menus, Main	A classe Menus exibe a interface de console ao usuário. A classe Main atua como o ponto de entrada e coordenador da aplicação.
+A classe Dados.Logs fornece um serviço de auditoria, registrando todas as ações de CRUD no log.txt.
+Interface (UI)	View.Menus, View.Main	A classe View.Menus exibe a interface de console ao usuário. A classe View.Main atua como o ponto de entrada e coordenador da aplicação.
 
 Testes Unitários	
 TestComandos	
-Módulo que utiliza JUnit para validar isoladamente a lógica de classes puras (Habilidade) e métodos utilitários (formatarNome), garantindo a integridade funcional do projeto.
+Módulo que utiliza JUnit para validar isoladamente a lógica de classes puras (Service.Habilidade) e métodos utilitários (formatarNome), garantindo a integridade funcional do projeto.

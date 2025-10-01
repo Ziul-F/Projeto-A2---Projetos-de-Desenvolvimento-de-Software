@@ -1,3 +1,7 @@
+package Dados;
+
+import Service.Treinador;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -114,11 +118,11 @@ public class GerenciadorTxt {
                 log.gravarDeletLogTreinador(treinadorDeletado);
             }
 
-            System.out.println("Treinador removido com sucesso!");
+            System.out.println("Service.Treinador removido com sucesso!");
             return true;
             
         } else {
-            System.out.println(" Falha ao remover o treinador. Treinador '" + linhaParaRemover + "' não encontrado.");
+            System.out.println(" Falha ao remover o treinador. Service.Treinador '" + linhaParaRemover + "' não encontrado.");
             return false;
         }
     }

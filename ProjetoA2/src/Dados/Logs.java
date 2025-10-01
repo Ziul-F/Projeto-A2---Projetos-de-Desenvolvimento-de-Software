@@ -1,3 +1,8 @@
+package Dados;
+
+import Service.Pokemon;
+import Service.Treinador;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

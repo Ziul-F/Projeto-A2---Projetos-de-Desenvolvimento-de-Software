@@ -1,3 +1,8 @@
+package Service;
+
+import Dados.GerenciadorTxt;
+import Dados.Logs;
+import View.Menus;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -472,7 +477,7 @@ public class GerenciadorPokemon implements Catalogo {
         while(!verificador);
     }
 
-    private String formatarNome(String nome) {
+    public static String formatarNome(String nome) {
     if (nome == null || nome.trim().isEmpty()) {
         return "";
     }

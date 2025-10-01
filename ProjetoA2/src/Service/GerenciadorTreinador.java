@@ -1,3 +1,9 @@
+package Service;
+
+import Dados.GerenciadorTxt;
+import Dados.Logs;
+import View.Menus;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -11,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class GerenciadorTreinador implements CatalogoTreinador{
+public class GerenciadorTreinador implements CatalogoTreinador {
 
     Menus menu = new Menus();
     Scanner scanner = new Scanner(System.in);
@@ -53,13 +59,13 @@ public class GerenciadorTreinador implements CatalogoTreinador{
     @Override
     public void adicionarTreinador(){
         System.out.println("------------------------------------------");
-        System.out.println("-------- Adicionar novo Treinador --------");
+        System.out.println("-------- Adicionar novo Service.Treinador --------");
         System.out.println("------------------------------------------");
         boolean verificadorId = false;
         Treinador novoTreinador = new Treinador();
         do{
 
-            System.out.print("Digite o ID do Treinador: ");
+            System.out.print("Digite o ID do Service.Treinador: ");
             int id = scanner.nextInt();
             scanner.nextLine();
 
@@ -76,7 +82,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         }while(!verificadorId);
         
             
-        System.out.print("Digite o nome do Treinador: ");
+        System.out.print("Digite o nome do Service.Treinador: ");
         String nome = scanner.nextLine();
         nome = formatarNome(nome);
         novoTreinador.setNome(nome);
@@ -145,7 +151,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
         }
 
         if (!pokemonEncontrado) {
-            System.out.println("Treinador '" + linhaParaRemover + "' não encontrado.");
+            System.out.println("Service.Treinador '" + linhaParaRemover + "' não encontrado.");
             return;
         }
         
@@ -175,7 +181,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 this.log.gravarDeletLogTreinador(treinadorDeletado); 
             }
 
-            System.out.println("Treinador '" + linhaParaRemover + "' removido com sucesso!");
+            System.out.println("Service.Treinador '" + linhaParaRemover + "' removido com sucesso!");
 
         } catch(IOException e){
             System.err.println("Erro ao reescrever o arquivo após a deleção: " + e.getMessage());
@@ -212,7 +218,7 @@ public class GerenciadorTreinador implements CatalogoTreinador{
             System.out.println("Ocorreu um erro ao ler o arquivo.");
         }
         if(verificadorBuscar == false){
-            System.out.println("O Treinador com o nome " + escolha + " nao foi encontrado.");
+            System.out.println("O Service.Treinador com o nome " + escolha + " nao foi encontrado.");
         }
         System.out.println("------------------------------------------");
     }
@@ -280,9 +286,9 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                     t.setTreinadorId(idTreinadorAtualizado);
                     this.log.gravarAtualizacaoLogTreinador(t); 
                 }
-                System.out.println("Informações do Treinador atualizadas!");
+                System.out.println("Informações do Service.Treinador atualizadas!");
             } else {
-                System.out.println("Treinador não encontrado.");
+                System.out.println("Service.Treinador não encontrado.");
             }
 
         } catch (IOException e) {
@@ -368,12 +374,12 @@ public class GerenciadorTreinador implements CatalogoTreinador{
                 inicio = fim;
             }
         } catch (Exception e) {
-            System.err.println("Erro ao analisar a linha do Treinador para edição: " + e.getMessage());
+            System.err.println("Erro ao analisar a linha do Service.Treinador para edição: " + e.getMessage());
             return linhaOriginal;
         }
 
         
-        System.out.println("\n--- Dados atuais do Treinador ---");
+        System.out.println("\n--- Dados atuais do Service.Treinador ---");
         dados.forEach((chave, valor) -> System.out.println(chave + ": " + valor));
         System.out.println("---------------------------------");
         

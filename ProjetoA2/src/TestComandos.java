@@ -1,19 +1,22 @@
+import Service.GerenciadorPokemon;
+import Service.Habilidade;
+import Service.PokemonNaoEncontradoException;
 import org.junit.*;
 
 public class TestComandos {
     // TODO: start to study jUnit tests.
 
     @Test
-    public void testFormatador(){ 
-        String nome1 = gerenciador.formatarNome("pikachu");
-        String nome2 = gerenciador.formatarNome("CHARMANDER");
-        String nome3 = gerenciador.formatarNome("vEnUsAuR");
-        String nome4 = gerenciador.formatarNome("nidoraN");
+    public void testFormatador(){
+        String nome1 = GerenciadorPokemon.formatarNome("pikachu");
+        String nome2 = GerenciadorPokemon.formatarNome("CHARMANDER");
+        String nome3 = GerenciadorPokemon.formatarNome("vEnUsAuR");
+        String nome4 = GerenciadorPokemon.formatarNome("nidoraN");
 
-        Assert.AssertEquals("Pikachu", nome1);
-        Assert.AssertEquals("Charmander", nome2);
-        Assert.AssertEquals("Venusaur", nome3);
-        Assert.AssertEquals("Nidoran", nome4);
+        Assert.assertEquals("Pikachu", nome1);
+        Assert.assertEquals("Charmander", nome2);
+        Assert.assertEquals("Venusaur", nome3);
+        Assert.assertEquals("Nidoran", nome4);
     }
 
 

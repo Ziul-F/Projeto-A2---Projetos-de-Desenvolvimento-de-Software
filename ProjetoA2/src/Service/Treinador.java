@@ -1,3 +1,5 @@
+package Service;
+
 public class Treinador {
     private int treinadorId;
     private String nome;

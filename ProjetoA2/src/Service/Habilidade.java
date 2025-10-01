@@ -1,3 +1,5 @@
+package Service;
+
 public class Habilidade {
     private String nome;
     private String descricao;

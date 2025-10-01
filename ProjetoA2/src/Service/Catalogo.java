@@ -1,3 +1,5 @@
+package Service;
+
 public abstract interface Catalogo {
     void adicionarPokemon();
 

@@ -1,3 +1,5 @@
+package Service;
+
 public class PokemonNaoEncontradoException extends RuntimeException  {
     public PokemonNaoEncontradoException(String message) {
         super(message);

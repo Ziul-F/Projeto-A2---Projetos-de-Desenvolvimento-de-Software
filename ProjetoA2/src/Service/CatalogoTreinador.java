@@ -1,3 +1,5 @@
+package Service;
+
 public abstract interface CatalogoTreinador {
     void adicionarTreinador();
 
